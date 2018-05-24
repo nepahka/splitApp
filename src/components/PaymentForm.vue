@@ -1,0 +1,277 @@
+<template>
+  <div class="card">
+    <h1 class="display-4 center">Add Payment</h1>
+    <hr>
+    <div class="form-group">
+      <label>Description</label>
+      <input
+        v-model="description"
+        class="form-control"
+        type="text"
+        placeholder="Description"
+      >
+    </div>
+    <div class="form-group">
+      <label for="paidby">Paid by</label>
+      <!--<paid-by :users="users"></paid-by>-->
+      <select
+        id="paidby"
+        v-model="paidBy"
+        class="form-control"
+      >
+        <option
+          disabled
+          value=""
+        >
+          Выберите один из вариантов
+        </option>
+        <option
+          v-for="user in users"
+          :key="user.id"
+          :value="user"
+        >
+          {{ user.name }}
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Summa</label>
+      <input
+        v-model.number="paidSum"
+        class="form-control"
+        type="number"
+        placeholder="Введите сумму"
+      >
+    </div>
+    <div class="form-group">
+      <label>Paid to</label>
+      <div
+        v-for="(user, index) in users"
+        :key="user.id"
+        class="user-item"
+        @click="toggleCheckbox(user)"
+      >
+        <div class="user-item__checkbox">
+          <label
+            :for="'paidto-' + index"
+            class="form-check-label"
+          >
+            <input
+              :id="'paidto-' + index"
+              :value="user"
+              :checked="isSelected(user)"
+              type="checkbox"
+            >
+          </label>
+        </div>
+        <div class="user-item__img">
+          <img
+            :src="user.picture"
+          >
+        </div>
+        <div class="user-item__name">
+          {{ user.name }}
+        </div>
+        <input
+          v-show="isSelected(user)"
+          :value="calcDebt(user)"
+          class="user-item__debt-input"
+          type="number"
+          placeholder=""
+          @click.stop=""
+        >
+      </div>
+    </div>
+    <button
+      type="button"
+      class="btn btn-success"
+      @click="addPayment"
+    >
+      Add
+    </button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'AddPaymentForm',
+  props: {
+    users: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
+  data () {
+    return {
+      debt: [],
+      paidBy: '',
+      paidTo: [],
+      paidSum: '',
+      debtors: {},
+      description: 'Новая платежка'
+    }
+  },
+  computed: {
+    allSelected: {
+      get () {
+        return this.users ? this.paidTo.length === this.users.length : true
+      },
+      set (value) {
+        var selected = []
+
+        if (value) {
+          this.users.forEach(function (user) {
+            selected.push(user)
+          })
+        }
+
+        this.paidTo = selected
+      }
+    }
+  },
+  created: function () {
+    this.allSelected = true
+    this.paidBy = this.users[0]
+  },
+  methods: {
+    toggleCheckbox (user) {
+      if (this.paidTo.includes(user)) {
+        this.paidTo.splice(this.paidTo.findIndex(u => u === user), 1)
+      } else {
+        this.paidTo.push(user)
+      }
+    },
+    calcDebt (user) {
+      if (this.paidTo.length) {
+        if (this.paidTo.includes(user)) {
+          this.paidTo[this.paidTo.indexOf(user)].debt = (this.paidSum / this.paidTo.length)
+        }
+      }
+      return Math.round10(this.paidSum / this.paidTo.length, -2)
+    },
+    isSelected (user) {
+      return this.paidTo.includes(user)
+    },
+    addPayment () {
+      this.calculateBalance()
+      this.calculateDebtors()
+      this.$emit('history', this.description, this.paidBy, this.paidTo, this.paidSum)
+    },
+    calculateBalance () {
+      this.paidBy.balance += this.paidSum
+
+      this.paidTo.forEach(function (debtor) {
+        debtor.balance -= debtor.debt
+      })
+    },
+    calculateDebtors () {
+      let self = this
+      this.paidTo.forEach(function (item) {
+        self.paidTo.forEach(function (debtor) {
+          item.debtors[debtor.name] = 0
+        })
+      })
+
+      let maxMax = 0
+      let minMin = 0
+      let maxUser
+      let minUser
+      let balance
+
+      this.paidTo.forEach(function () {
+        self.paidTo.forEach(function (debtor) {
+          balance = debtor.balance
+          if (balance > 0) {
+            if (maxMax < balance) {
+              maxMax = balance
+              maxUser = debtor
+            }
+          } else {
+            if (minMin < -balance) {
+              minMin = -balance
+              minUser = debtor
+            }
+          }
+        })
+
+        if (minMin !== 0 && maxMax !== 0) {
+          maxUser.balance += minUser.balance
+          maxUser.debtors[minUser.name] = minMin
+
+          minUser.debtors[maxUser.name] = -minMin
+
+          minUser.balance = 0
+
+          maxMax = 0
+          minMin = 0
+        }
+      })
+      this.paidTo.forEach(function (item) {
+        for (let debtor in item.debtors) {
+          item.balance += item.debtors[debtor]
+        }
+      })
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .card {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    width: 32rem;
+    padding: 30px;
+    text-align: left;
+    top: 50%;
+    left: 50%;
+  }
+
+  label {
+    font-size: 20px;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .user-item {
+    display: flex;
+    align-items: center;
+    height: 40px;
+  }
+  .user-item ~ .user-item {
+    border-top: 1px solid #eee;
+  }
+  .user-item__img {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+    margin-left: 12px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .user-item__img img {
+    width: inherit;
+    height: inherit;
+  }
+  .user-item__checkbox {
+    position: relative;
+    top: -3px;
+  }
+  .user-item__name {
+
+  }
+  .user-item__debt-input {
+    width: 80px;
+    text-align: right;
+    border: none;
+    margin-left: auto;
+    height: 39px;
+    outline: none;
+    padding: 0;
+  }
+</style>
