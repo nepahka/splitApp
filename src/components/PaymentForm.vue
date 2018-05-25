@@ -213,6 +213,49 @@ export default {
           item.balance += item.debtors[debtor]
         }
       })
+
+      // тест нового алгоритма
+      this.paidTo.forEach(function (item) {
+        self.paidTo.forEach(function (debtor) {
+          item.debtors[debtor.name] = 0
+        })
+      })
+
+      let sortArray = this.paidTo.sort(r => r.balance)
+      let negativeBalance = sortArray.filter(a => a.balance < 0)
+      let positiveBalance = sortArray.filter(a => a.balance >= 0)
+      let resultArray = []
+      negativeBalance.forEach(function (item) {
+        resultArray.push(item)
+      })
+      positiveBalance.forEach(function (item) {
+        resultArray.push(item)
+      })
+      resultArray.forEach(function (item) {
+        item.pseudoBalance = item.balance
+      })
+      resultArray.forEach(function (item) {
+        let curBalance = item.pseudoBalance
+        for (let i = 0; i < resultArray.length; i++) {
+          if (resultArray[i].pseudoBalance > 0 && curBalance < 0) {
+            curBalance += resultArray[i].pseudoBalance
+            if (curBalance <= 0) {
+              item.debtors[resultArray[i].name] = -resultArray[i].pseudoBalance
+            } else {
+              item.debtors[resultArray[i].name] = -(resultArray[i].pseudoBalance - curBalance)
+              resultArray[i].pseudoBalance -= (resultArray[i].pseudoBalance - curBalance)
+              item.pseudoBalance = 0
+            }
+          }
+        }
+      })
+      resultArray.forEach(function (resultItem) {
+        self.paidTo.forEach(function (trueItem) {
+          if (resultItem.name === trueItem.name) {
+            trueItem.debtors = resultItem.debtors
+          }
+        })
+      })
     }
   }
 }

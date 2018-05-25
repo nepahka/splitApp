@@ -11,6 +11,7 @@
       >
         <div class="group-name">
           {{ group.name }}
+          {{ compudedGroupBalance }}
         </div>
         <div class="group-members">
           <img v-for="member in group.members" :src="member.picture">
@@ -34,6 +35,9 @@ export default {
     return {}
   },
   computed: {
+    compudedGroupBalance () {
+      return this.groups[0].members.reduce((prev, current) => prev + current.balance, 0)
+    }
   }
 }
 </script>
