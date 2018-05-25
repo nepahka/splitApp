@@ -160,59 +160,14 @@ export default {
       this.$emit('history', this.description, this.paidBy, this.paidTo, this.paidSum)
     },
     calculateBalance () {
-      this.paidBy.balance += this.paidSum
+      this.paidBy.balance = +(this.paidBy.balance + this.paidSum).toFixed(10)
 
       this.paidTo.forEach(function (debtor) {
-        debtor.balance -= debtor.debt
+        debtor.balance = +(debtor.balance - debtor.debt).toFixed(10)
       })
     },
     calculateDebtors () {
       let self = this
-      this.paidTo.forEach(function (item) {
-        self.paidTo.forEach(function (debtor) {
-          item.debtors[debtor.name] = 0
-        })
-      })
-
-      let maxMax = 0
-      let minMin = 0
-      let maxUser
-      let minUser
-      let balance
-
-      this.paidTo.forEach(function () {
-        self.paidTo.forEach(function (debtor) {
-          balance = debtor.balance
-          if (balance > 0) {
-            if (maxMax < balance) {
-              maxMax = balance
-              maxUser = debtor
-            }
-          } else {
-            if (minMin < -balance) {
-              minMin = -balance
-              minUser = debtor
-            }
-          }
-        })
-
-        if (minMin !== 0 && maxMax !== 0) {
-          maxUser.balance += minUser.balance
-          maxUser.debtors[minUser.name] = minMin
-
-          minUser.debtors[maxUser.name] = -minMin
-
-          minUser.balance = 0
-
-          maxMax = 0
-          minMin = 0
-        }
-      })
-      this.paidTo.forEach(function (item) {
-        for (let debtor in item.debtors) {
-          item.balance += item.debtors[debtor]
-        }
-      })
 
       // тест нового алгоритма
       this.paidTo.forEach(function (item) {
@@ -225,29 +180,35 @@ export default {
       let negativeBalance = sortArray.filter(a => a.balance < 0)
       let positiveBalance = sortArray.filter(a => a.balance >= 0)
       let resultArray = []
+
+      negativeBalance.forEach(function (item) {
+        item.pseudoBalance = item.balance
+      })
+
+      positiveBalance.forEach(function (item) {
+        item.pseudoBalance = item.balance
+      })
+      negativeBalance.forEach(function (negativeItem) {
+        let curBalance = negativeItem.pseudoBalance
+        positiveBalance.forEach(function (positiveItem) {
+          if (positiveItem.pseudoBalance > 0 && curBalance < 0) {
+            curBalance += positiveItem.pseudoBalance
+            if (curBalance <= 0) {
+              negativeItem.debtors[positiveItem.name] = -positiveItem.pseudoBalance
+            } else {
+              negativeItem.debtors[positiveItem.name] = -(positiveItem.pseudoBalance - curBalance)
+              positiveItem.pseudoBalance -= (positiveItem.pseudoBalance - curBalance)
+              negativeItem.pseudoBalance = 0
+            }
+          }
+        })
+        positiveBalance.sort(r => r.pseudoBalance)
+      })
       negativeBalance.forEach(function (item) {
         resultArray.push(item)
       })
       positiveBalance.forEach(function (item) {
         resultArray.push(item)
-      })
-      resultArray.forEach(function (item) {
-        item.pseudoBalance = item.balance
-      })
-      resultArray.forEach(function (item) {
-        let curBalance = item.pseudoBalance
-        for (let i = 0; i < resultArray.length; i++) {
-          if (resultArray[i].pseudoBalance > 0 && curBalance < 0) {
-            curBalance += resultArray[i].pseudoBalance
-            if (curBalance <= 0) {
-              item.debtors[resultArray[i].name] = -resultArray[i].pseudoBalance
-            } else {
-              item.debtors[resultArray[i].name] = -(resultArray[i].pseudoBalance - curBalance)
-              resultArray[i].pseudoBalance -= (resultArray[i].pseudoBalance - curBalance)
-              item.pseudoBalance = 0
-            }
-          }
-        }
       })
       resultArray.forEach(function (resultItem) {
         self.paidTo.forEach(function (trueItem) {
