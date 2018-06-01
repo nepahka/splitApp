@@ -9,41 +9,61 @@
       >Add payment
       </button>
     </div>
-    <history-card-item
-      v-for="historyItem in paymentsHistory"
-      :key="historyItem.id"
-      :history-item="historyItem"
-      class="card_body"
-    />
+    <div class="card_body">
+      <div
+        class="history-item alert alert-info"
+        v-for="payment in payments"
+        :key="payment.id"
+      >
+        <div class="history-item__description">
+          {{ payment.description }}
+        </div>
+        <div class="history-item__message">
+          Paid by {{ payment.paidBy.name }} for
+          <span
+            v-for="(paidUser, index) in payment.paidTo"
+            :key="paidUser.id"
+          >
+            {{ paidToUsers(paidUser, index) }}
+          </span>
+        </div>
+        <div class="history-item__count">
+          {{ payment.sum }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import HistoryCardItem from './HistoryCardItem.vue'
-
 export default {
-  components: {
-    HistoryCardItem
-  },
   props: {
-    paymentsHistory: {
-      type: Array,
-      default () {
-        return []
-      }
-    }
+    id: Number
   },
   data () {
-    return {
+    return {}
+  },
+  computed: {
+    payments () {
+      return this.$store.getters.getPaymentByGroupId(this.id)
     }
   },
   methods: {
     showPaymentModal () {
       this.$emit('showPaymentModal', true)
+    },
+    paidToUsers (paidUser, paidToUsers, index) {
+      let msg = ''
+      msg += paidUser.name
+      return msg
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
+  .history-item__count {
+    font-weight: bold;
+    font-size: 20px;
+  }
 </style>

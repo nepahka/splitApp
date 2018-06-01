@@ -20,23 +20,19 @@
         {{ user.name }} : {{ user.balance }}
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    users: {
-      type: Array,
-      default () {
-        return {}
-      }
-    }
+    users: Array
   },
   data () {
     return {
     }
+  },
+  computed: {
   },
   methods: {
     showUsersModal () {
@@ -47,5 +43,9 @@ export default {
 </script>
 
 <style>
-
+  .alert img {
+    width: 32px;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
 </style>

@@ -13,7 +13,6 @@
     </div>
     <div class="form-group">
       <label for="paidby">Paid by</label>
-      <!--<paid-by :users="users"></paid-by>-->
       <select
         id="paidby"
         v-model="paidBy"
@@ -95,14 +94,7 @@
 <script>
 export default {
   name: 'AddPaymentForm',
-  props: {
-    users: {
-      type: Array,
-      default () {
-        return []
-      }
-    }
-  },
+  props: {},
   data () {
     return {
       debt: [],
@@ -110,10 +102,17 @@ export default {
       paidTo: [],
       paidSum: '',
       debtors: {},
-      description: 'Новая платежка'
+      description: 'Новая платежка',
+      transactions: []
     }
   },
   computed: {
+    users () {
+      return this.$store.getters.getMembersByGroupId(+this.$route.params['id'])
+    },
+    allUsers () {
+      return this.$store.getters.getUsers
+    },
     allSelected: {
       get () {
         return this.users ? this.paidTo.length === this.users.length : true
@@ -155,28 +154,71 @@ export default {
       return this.paidTo.includes(user)
     },
     addPayment () {
+      // todo: Пересмотреть тут все очень внимательно
       this.calculateBalance()
       this.calculateDebtors()
-      this.$emit('history', this.description, this.paidBy, this.paidTo, this.paidSum)
+
+      this.allUsers.forEach(user => {
+        this.$store.dispatch('updateUser', {
+          id: user.id,
+          balance: user.balance,
+          debtors: user.debtors
+        })
+      })
+
+      let paidToIds = this.paidTo.map(u => {
+        return {
+          userId: u.id,
+          name: u.name
+        }
+      })
+
+      this.$store.dispatch('createPayment', {
+        groupId: +this.$route.params['id'],
+        description: this.description,
+        sum: this.paidSum,
+        paidBy: {
+          userId: this.paidBy.id,
+          name: this.paidBy.name
+        },
+        paidTo: paidToIds,
+        transactions: this.transactions
+      })
+      this.$emit('history')
     },
     calculateBalance () {
+      let self = this
+      const paidByUserSum = {
+        userId: this.paidBy.id,
+        sum: +this.paidSum.toFixed(10)
+      }
       this.paidBy.balance = +(this.paidBy.balance + this.paidSum).toFixed(10)
 
       this.paidTo.forEach(function (debtor) {
+        self.transactions.push({
+          userId: debtor.id,
+          sum: -debtor.debt.toFixed(10)
+        })
         debtor.balance = +(debtor.balance - debtor.debt).toFixed(10)
+        console.log('BALANCE', debtor.balance)
       })
+      if (this.transactions.find(t => t.userId === paidByUserSum.userId) !== undefined) {
+        this.transactions.find(t => t.userId === paidByUserSum.userId).sum += paidByUserSum.sum
+      } else {
+        this.transactions.push(paidByUserSum)
+      }
     },
     calculateDebtors () {
-      let self = this
+      let users = this.allUsers
 
       // тест нового алгоритма
-      this.paidTo.forEach(function (item) {
-        self.paidTo.forEach(function (debtor) {
+      users.forEach(function (item) {
+        users.forEach(function (debtor) {
           item.debtors[debtor.name] = 0
         })
       })
 
-      let sortArray = this.paidTo.sort(r => r.balance)
+      let sortArray = users.sort(r => r.balance)
       let negativeBalance = sortArray.filter(a => a.balance < 0)
       let positiveBalance = sortArray.filter(a => a.balance >= 0)
       let resultArray = []
@@ -211,7 +253,7 @@ export default {
         resultArray.push(item)
       })
       resultArray.forEach(function (resultItem) {
-        self.paidTo.forEach(function (trueItem) {
+        users.forEach(function (trueItem) {
           if (resultItem.name === trueItem.name) {
             trueItem.debtors = resultItem.debtors
           }
@@ -247,9 +289,11 @@ export default {
     align-items: center;
     height: 40px;
   }
+
   .user-item ~ .user-item {
     border-top: 1px solid #eee;
   }
+
   .user-item__img {
     width: 32px;
     height: 32px;
@@ -258,17 +302,21 @@ export default {
     border-radius: 50%;
     overflow: hidden;
   }
+
   .user-item__img img {
     width: inherit;
     height: inherit;
   }
+
   .user-item__checkbox {
     position: relative;
     top: -3px;
   }
+
   .user-item__name {
 
   }
+
   .user-item__debt-input {
     width: 80px;
     text-align: right;

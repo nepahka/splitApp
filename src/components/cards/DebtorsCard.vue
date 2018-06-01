@@ -5,7 +5,7 @@
     </div>
     <div class="card_body">
       <div
-        v-for="user in owesUsers"
+        v-for="user in debtors"
         :key="user.id"
         class="alert alert-warning"
         role="alert"
@@ -24,15 +24,15 @@
 <script>
 export default {
   props: {
-    owesUsers: {
-      type: Array,
-      default () {
-        return []
-      }
-    }
   },
   data () {
-    return {}
+    return {
+    }
+  },
+  computed: {
+    debtors () {
+      return this.$store.getters.getDebtors
+    }
   }
 }
 </script>

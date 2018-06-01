@@ -1,12 +1,29 @@
 <template>
   <div id="app">
-    <router-view/>
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+    }
+  },
+  created () {
+    this.$store.dispatch('fetchConnections')
+    this.$store.dispatch('fetchPayments')
+    this.$store.dispatch('fetchUsers')
+    this.$store.dispatch('fetchGroups')
+  },
+  computed: {
+  },
+  methods: {
+  },
+  watch: {}
 }
 </script>
 
@@ -40,9 +57,11 @@ export default {
     display: flex;
     margin: 0 auto;
   }
+
   .main-row ~ .main-row {
     margin-top: 2rem;
   }
+
   .card_header {
     display: flex;
     align-items: center;

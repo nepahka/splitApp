@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import StartScreen from '@/components/StartScreen'
-// import AddPaymentForm from '@/components/AddPaymentForm'
+import StartScreen from '@/components/screens/StartScreen'
+import GroupScreen from '@/components/screens/GroupScreen'
 
 Vue.use(Router)
 
@@ -11,12 +11,13 @@ export default new Router({
       path: '/',
       name: 'StartScreen',
       component: StartScreen
+    },
+    {
+      path: '/group/:id',
+      props: true,
+      name: 'GroupScreen',
+      component: GroupScreen
     }
-    // ,
-    // {
-    //   path: '/addpayment',
-    //   name: 'AddPaymentForm',
-    //   component: AddPaymentForm
-    // }
-  ]
+  ],
+  mode: 'history'
 })

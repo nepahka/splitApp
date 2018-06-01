@@ -26,33 +26,28 @@
 export default {
   name: 'UsersForm',
   props: {
-    users: {
-      type: Array,
-      default () {
-        return []
-      }
-    }
   },
   data () {
     return {
-      name: ''
+      name: '',
+      picture: ''
     }
   },
   computed: {
   },
   methods: {
-    addUser () {
-      this.getUserPicture()
-        .then((response) => {
-          return response.json()
-        })
-        .then(({results}) => {
-          this.$emit('addUser', this.name, results[0].picture.thumbnail)
-        })
-        .catch(alert)
+    async addUser () {
+      const response = await fetch('https://api.randomuser.me/?lego')
+      const picture = await response.json()
+      this.picture = picture.results[0].picture.thumbnail
+      this.$emit('addUser')
+      this.createUser()
     },
-    getUserPicture () {
-      return fetch('https://api.randomuser.me/?lego')
+    createUser () {
+      this.$store.dispatch('createUser', {
+        name: this.name,
+        picture: this.picture
+      })
     }
   }
 }
