@@ -72,23 +72,32 @@ export default {
       let result = []
       let debtors = state.users
       debtors.forEach(function (item, i) {
-        for (let debtor in item.debtors) {
-          if (item.debtors[debtor] < 0) {
+        for (let userId in item.debtors) {
+          console.log(item.debtors[userId])
+          if (item.debtors[userId] < 0) {
             result.push({
               who: {
                 name: item.name,
                 picture: item.picture
               },
               whom: {
-                name: debtors.filter(u => u.name === debtor)[0].name,
-                picture: debtors.filter(u => u.name === debtor)[0].picture
+                name: debtors.filter(u => u.id === +userId)[0].name,
+                picture: debtors.filter(u => u.id === +userId)[0].picture
               },
-              sum: item.debtors[debtor]
+              sum: item.debtors[userId]
             })
           }
         }
       })
       return result
+    },
+    getNameByUserId: (state, getters) => (id) => {
+      let user = state.users.filter(u => u.id === id)[0]
+      return user.name
+    },
+    getPictureByUserId: (state, getters) => (id) => {
+      let user = state.users.filter(u => u.id === id)[0]
+      return user.picture
     }
   }
 }

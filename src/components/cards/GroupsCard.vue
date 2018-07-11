@@ -48,7 +48,7 @@ export default {
       this.$emit('showGroupsModal', true)
     },
     openGroup (id) {
-      this.$router.push('/group/' + id)
+      this.$router.push('/groups/' + id)
     }
   }
 }

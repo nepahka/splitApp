@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <keep-alive>
-      <router-view/>
+      <router-view v-if="loading"/>
     </keep-alive>
   </div>
 </template>
@@ -11,13 +11,19 @@ export default {
   name: 'App',
   data () {
     return {
+      loading: false
     }
   },
   created () {
-    this.$store.dispatch('fetchConnections')
-    this.$store.dispatch('fetchPayments')
-    this.$store.dispatch('fetchUsers')
-    this.$store.dispatch('fetchGroups')
+    this.$store.dispatch('fetchConnections').then(() => {
+      this.$store.dispatch('fetchPayments').then(() => {
+        this.$store.dispatch('fetchUsers').then(() => {
+          this.$store.dispatch('fetchGroups').then(() => {
+            this.loading = true
+          })
+        })
+      })
+    })
   },
   computed: {
   },

@@ -13,7 +13,7 @@ export default new Router({
       component: StartScreen
     },
     {
-      path: '/group/:id',
+      path: '/groups/:id',
       props: true,
       name: 'GroupScreen',
       component: GroupScreen

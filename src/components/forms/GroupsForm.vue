@@ -71,9 +71,18 @@ export default {
   },
   methods: {
     addGroup () {
+      let resultMembers = []
+      this.members.map(uID => {
+        resultMembers.push(
+          {
+            userId: uID,
+            debtors: {},
+            balance: 0
+          })
+      })
       this.$store.dispatch('createGroup', {
         name: this.name,
-        members: this.members
+        members: resultMembers
       })
       // спорный момент
       const id = this.$store.getters.getGroups.length + 1

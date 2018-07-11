@@ -41,6 +41,7 @@ export default {
           body: JSON.stringify(newGroup)
         })
       const payment = await response.json()
+      console.log('createPayment', payment)
       commit('addPayment', payment)
     }
   },
@@ -54,11 +55,10 @@ export default {
     },
     getRecalculateMembersByGroupId: (state, getters, rootState, rootGetters) => (id) => {
       let members = rootGetters.getMembersByGroupId(id)
-      console.log('Вызов getRecalculateMembersByGroupId', id, state.payments)
+      console.log('Вызов getRecalculateMembersByGroupId', id)
       let curPayments = getters.getPaymentByGroupId(id)
-      console.log(members)
       // calculate payments
-      const clone = members.map(a => ({...a}))
+      const clone = JSON.parse(JSON.stringify(members))
       clone.map(d => {
         d.balance = 0
       })

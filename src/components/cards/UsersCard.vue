@@ -11,7 +11,7 @@
     </div>
     <div class="card_body">
       <div
-        v-for="user in users"
+        v-for="user in members"
         :key="user.id"
         class="alert"
         :class="user.balance >= 0 ? 'alert-success' : 'alert-danger'"
@@ -26,13 +26,20 @@
 <script>
 export default {
   props: {
-    users: Array
   },
   data () {
     return {
     }
   },
   computed: {
+    members () {
+      console.log('USERS CARD')
+      if (this.$route.params.id) {
+        return this.$store.getters.getRecalculateMembersByGroupId(+this.$route.params.id)
+      } else {
+        return this.$store.getters.getUsers
+      }
+    }
   },
   methods: {
     showUsersModal () {

@@ -103,7 +103,8 @@ export default {
       paidSum: '',
       debtors: {},
       description: 'Новая платежка',
-      transactions: []
+      transactions: [],
+      groupUsers: []
     }
   },
   computed: {
@@ -157,33 +158,8 @@ export default {
       // todo: Пересмотреть тут все очень внимательно
       this.calculateBalance()
       this.calculateDebtors()
-
-      this.allUsers.forEach(user => {
-        this.$store.dispatch('updateUser', {
-          id: user.id,
-          balance: user.balance,
-          debtors: user.debtors
-        })
-      })
-
-      let paidToIds = this.paidTo.map(u => {
-        return {
-          userId: u.id,
-          name: u.name
-        }
-      })
-
-      this.$store.dispatch('createPayment', {
-        groupId: +this.$route.params['id'],
-        description: this.description,
-        sum: this.paidSum,
-        paidBy: {
-          userId: this.paidBy.id,
-          name: this.paidBy.name
-        },
-        paidTo: paidToIds,
-        transactions: this.transactions
-      })
+      this.createPayment()
+      this.updateUsers()
       this.$emit('history')
     },
     calculateBalance () {
@@ -210,11 +186,10 @@ export default {
     },
     calculateDebtors () {
       let users = this.allUsers
-
       // тест нового алгоритма
       users.forEach(function (item) {
         users.forEach(function (debtor) {
-          item.debtors[debtor.name] = 0
+          item.debtors[debtor.id] = 0
         })
       })
 
@@ -236,9 +211,9 @@ export default {
           if (positiveItem.pseudoBalance > 0 && curBalance < 0) {
             curBalance += positiveItem.pseudoBalance
             if (curBalance <= 0) {
-              negativeItem.debtors[positiveItem.name] = -positiveItem.pseudoBalance
+              negativeItem.debtors[positiveItem.id] = -positiveItem.pseudoBalance
             } else {
-              negativeItem.debtors[positiveItem.name] = -(positiveItem.pseudoBalance - curBalance)
+              negativeItem.debtors[positiveItem.id] = -(positiveItem.pseudoBalance - curBalance)
               positiveItem.pseudoBalance -= (positiveItem.pseudoBalance - curBalance)
               negativeItem.pseudoBalance = 0
             }
@@ -254,10 +229,109 @@ export default {
       })
       resultArray.forEach(function (resultItem) {
         users.forEach(function (trueItem) {
+          if (resultItem.id === trueItem.id) {
+            trueItem.debtors = resultItem.debtors
+          }
+        })
+      })
+    },
+    calculateGroupDebtors () {
+      // делаем клон
+      this.groupUsers = JSON.parse(JSON.stringify(this.$store.getters.getRecalculateMembersByGroupId(+this.$route.params['id'])))
+      const users2 = this.groupUsers
+      // тест нового алгоритма
+      users2.forEach(function (item) {
+        users2.forEach(function (debtor) {
+          item.debtors[debtor.id] = 0
+        })
+      })
+
+      let sortArray = users2.sort(r => r.balance)
+      let negativeBalance = sortArray.filter(a => a.balance < 0)
+      let positiveBalance = sortArray.filter(a => a.balance >= 0)
+      let resultArray = []
+
+      negativeBalance.forEach(function (item) {
+        item.pseudoBalance = item.balance
+      })
+
+      positiveBalance.forEach(function (item) {
+        item.pseudoBalance = item.balance
+      })
+      negativeBalance.forEach(function (negativeItem) {
+        let curBalance = negativeItem.pseudoBalance
+        positiveBalance.forEach(function (positiveItem) {
+          if (positiveItem.pseudoBalance > 0 && curBalance < 0) {
+            curBalance += positiveItem.pseudoBalance
+            if (curBalance <= 0) {
+              negativeItem.debtors[positiveItem.id] = -positiveItem.pseudoBalance
+            } else {
+              negativeItem.debtors[positiveItem.id] = -(positiveItem.pseudoBalance - curBalance)
+              positiveItem.pseudoBalance -= (positiveItem.pseudoBalance - curBalance)
+              negativeItem.pseudoBalance = 0
+            }
+          }
+        })
+        positiveBalance.sort(r => r.pseudoBalance)
+      })
+      negativeBalance.forEach(function (item) {
+        resultArray.push(item)
+      })
+      positiveBalance.forEach(function (item) {
+        resultArray.push(item)
+      })
+      resultArray.forEach(function (resultItem) {
+        users2.forEach(function (trueItem) {
           if (resultItem.name === trueItem.name) {
             trueItem.debtors = resultItem.debtors
           }
         })
+      })
+    },
+    async createPayment () {
+      let paidToIds = this.paidTo.map(u => {
+        return {
+          userId: u.id,
+          name: u.name
+        }
+      })
+      await this.$store.dispatch('createPayment', {
+        groupId: +this.$route.params['id'],
+        description: this.description,
+        sum: this.paidSum,
+        paidBy: {
+          userId: this.paidBy.id,
+          name: this.paidBy.name
+        },
+        paidTo: paidToIds,
+        transactions: this.transactions
+      })
+      this.calculateGroupDebtors()
+      this.updateGroup()
+    },
+    updateUsers () {
+      this.allUsers.forEach(user => {
+        this.$store.dispatch('updateUser', {
+          id: user.id,
+          balance: user.balance,
+          debtors: user.debtors
+        })
+      })
+    },
+    updateGroup () {
+      let groupMembers = []
+      this.groupUsers.forEach(user => {
+        groupMembers.push(
+          {
+            userId: user.id,
+            debtors: user.debtors,
+            balance: user.balance
+          }
+        )
+      })
+      this.$store.dispatch('updateGroup', {
+        id: +this.$route.params['id'],
+        members: groupMembers
       })
     }
   }

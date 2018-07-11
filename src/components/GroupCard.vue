@@ -18,14 +18,13 @@
 <script>
 export default {
   props: {
-    id: Number
   },
   data () {
     return {}
   },
   computed: {
-    group (id) {
-      return this.$store.getters.getGroupById(id)
+    group () {
+      return this.$store.getters.getGroupById(+this.$route.params.id)
     }
   },
   methods: {

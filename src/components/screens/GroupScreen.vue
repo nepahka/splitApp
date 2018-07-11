@@ -1,14 +1,14 @@
 <template>
   <div class="main">
     <div class="main-row">
-      <group-card :id="+id"/>
+      <group-card/>
       <history-card
-        :id="+id"
         @showPaymentModal="isPaymentFormVisible = $event"
       />
     </div>
     <div class="main-row">
-      <users-card :users="members"/>
+      <users-card/>
+      <debtors-card/>
     </div>
     <payment-form
       v-if="isPaymentFormVisible"
@@ -22,13 +22,13 @@ import GroupCard from '../GroupCard.vue'
 import UsersCard from '../cards/UsersCard.vue'
 import HistoryCard from '../HistoryCard.vue'
 import PaymentForm from '../forms/PaymentForm.vue'
+import DebtorsCard from '../cards/DebtorsCard.vue'
 
 export default {
   components: {
-    GroupCard, HistoryCard, PaymentForm, UsersCard
+    GroupCard, HistoryCard, PaymentForm, UsersCard, DebtorsCard
   },
   props: {
-    id: String
   },
   data () {
     return {
@@ -37,9 +37,6 @@ export default {
     }
   },
   computed: {
-    members () {
-      return this.$store.getters.getRecalculateMembersByGroupId(+this.id)
-    }
   },
   methods: {
     addHistory () {

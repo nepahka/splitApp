@@ -38,14 +38,13 @@
 <script>
 export default {
   props: {
-    id: Number
   },
   data () {
     return {}
   },
   computed: {
     payments () {
-      return this.$store.getters.getPaymentByGroupId(this.id)
+      return this.$store.getters.getPaymentByGroupId(+this.$route.params.id)
     }
   },
   methods: {
