@@ -16,8 +16,8 @@
         class="alert"
         :class="user.balance >= 0 ? 'alert-success' : 'alert-danger'"
       >
-        <img :src="user.picture">
-        {{ user.name }} : {{ user.balance }}
+        <img :src="picture(user.id)">
+        {{ name(user.id) }} : {{ user.balance }}
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
     members () {
       console.log('USERS CARD')
       if (this.$route.params.id) {
-        return this.$store.getters.getRecalculateMembersByGroupId(+this.$route.params.id)
+        return this.$store.getters.getGroupById(+this.$route.params.id)[0].members
       } else {
         return this.$store.getters.getUsers
       }
@@ -44,6 +44,12 @@ export default {
   methods: {
     showUsersModal () {
       this.$emit('showUsersModal', true)
+    },
+    picture (id) {
+      return this.$store.getters.getPictureByUserId(id)
+    },
+    name (id) {
+      return this.$store.getters.getNameByUserId(id)
     }
   }
 }

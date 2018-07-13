@@ -10,7 +10,7 @@
       </button>
     </div>
     <div class="card_body">
-      {{ group.name }}
+      {{ name }}
     </div>
   </div>
 </template>
@@ -23,8 +23,12 @@ export default {
     return {}
   },
   computed: {
-    group () {
-      return this.$store.getters.getGroupById(+this.$route.params.id)
+    name () {
+      if (this.$route.params.id) {
+        return this.$store.getters.getGroupById(+this.$route.params.id)[0].name
+      } else {
+        return ''
+      }
     }
   },
   methods: {

@@ -19,8 +19,7 @@
       >
         <div class="group-name">
           {{ group.name }}
-          {{ group.balance }}
-          {{ group.id }}
+          {{ balance(group.id) }}
         </div>
         <div class="group-members">
           <img v-for="member in members(group.id)" :src="member.picture">
@@ -43,6 +42,11 @@ export default {
   methods: {
     members (id) {
       return this.$store.getters.getMembersByGroupId(id)
+    },
+    balance (id) {
+      return this.$store.getters.getPaymentByGroupId(id).reduce((sum, item) => {
+        return sum + item.sum
+      }, 0)
     },
     showGroupsModal () {
       this.$emit('showGroupsModal', true)

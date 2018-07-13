@@ -16,13 +16,15 @@ export default {
     createGroup (state, group) {
       state.groups.push(group)
     },
-    updateGroup (state, group) {
+    updateGroup (state, {id, members}) {
       console.log('Mutation updateGroup')
-      let curGroup = state.groups.find(g => g.id === group.id)
-      return {
-        ...curGroup,
-        ...group
-      }
+      state.groups.find(g => g.id === id).members = members
+    },
+    updateGroupMember (state, {id, memberID, debtors, balance}) {
+      console.log('Mutation updateGroupMember')
+      let member = state.groups.find(g => g.id === id).members.find(m => m.id === memberID)
+      member.debtors = debtors
+      member.balance = balance
     }
   },
   actions: {
@@ -44,8 +46,30 @@ export default {
           body: JSON.stringify({name: name, members: members})
         })
       const updateGroup = await response.json()
-      console.log('updatedGroup', updateGroup)
+      console.log('async updatedGroup', updateGroup)
       commit('updateGroup', updateGroup)
+    },
+    async updateGroupMember ({commit}, {id, memberID, debtors, balance}) {
+      console.log('Actions updateGroup', id, memberID, debtors, balance)
+      const response = await fetch('http://localhost:3000/groups/' + id,
+        {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: id,
+            members: {
+              id: memberID,
+              debtors: debtors,
+              balance: balance
+            }
+          })
+        })
+      const updateGroupMember = await response.json()
+      console.log('async updateGroupMember', updateGroupMember)
+      commit('updateGroupMember', updateGroupMember)
     },
     async createGroup ({commit}, {name, members}) {
       const newGroup = new Group(name, members)
@@ -66,24 +90,26 @@ export default {
       return state.groups
     },
     getGroupById: (state, getters) => (id) => {
-      console.log('Вызов getGroupById', state.groups.filter(group => group.id === +id))
+      console.log('Вызов getGroupById')
       return state.groups.filter(group => group.id === +id)
     },
     getDebtorsByGroupId: (state, getters, rootState, rootGetters) => (id) => {
+      console.log('Вызов getDebtorsByGroupId')
       let result = []
       let debtors = getters.getGroupById(id)[0].members
-      console.warn(debtors)
       debtors.forEach(function (item, i) {
         for (let debtor in item.debtors) {
           if (item.debtors[debtor] < 0) {
             result.push({
               who: {
-                name: rootGetters.getNameByUserId(item.userId),
-                picture: rootGetters.getPictureByUserId(item.userId)
+                id: item.id,
+                name: rootGetters.getNameByUserId(item.id),
+                picture: rootGetters.getPictureByUserId(item.id)
               },
               whom: {
-                name: rootGetters.getNameByUserId(debtors.filter(u => u.userId === +debtor)[0].userId),
-                picture: rootGetters.getPictureByUserId(debtors.filter(u => u.userId === +debtor)[0].userId)
+                id: +debtor,
+                name: rootGetters.getNameByUserId(debtors.filter(u => u.id === +debtor)[0].id),
+                picture: rootGetters.getPictureByUserId(debtors.filter(u => u.id === +debtor)[0].id)
               },
               sum: item.balance
             })

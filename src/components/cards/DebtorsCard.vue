@@ -4,7 +4,6 @@
       <h3>Кто кому должен</h3>
     </div>
     <div class="card_body">
-      {{ stata }}
       <div
         v-for="user in debtors"
         :key="user.who.picture"
@@ -35,10 +34,6 @@ export default {
   watch: {
   },
   computed: {
-    stata () {
-      console.log('stats')
-      return this.$store.state.groups
-    },
     debtors () {
       console.log('DEBTORS CARD')
       if (this.$route.params.id) {
@@ -49,11 +44,52 @@ export default {
     }
   },
   methods: {
-    settleDebt (user) {
-      console.log(user)
+    settleDebt ({sum, who, whom}) {
+      let whoUser = this.$store.getters.getUsers.find(u => u.id === who.id)
+      let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
+
+      console.log('settleDebt', sum, who, whom)
+      whoUser.balance -= sum
+      whoUser.debtors[whom.id] = 0
+      whomUser.balance += sum
+
+      this.$store.dispatch('updateUser', {
+        id: whoUser.id,
+        balance: whoUser.balance,
+        debtors: whoUser.debtors
+      })
+      this.$store.dispatch('updateUser', {
+        id: whomUser.id,
+        balance: whomUser.balance,
+        debtors: whomUser.debtors
+      })
+      this.$store.getters.getGroups.map(group => {
+        let updatedMembers = []
+        let whoGroupBalance = 0
+        group.members.map(member => {
+          if (member.id === who.id) {
+            whoGroupBalance = member.balance
+            member.balance = 0
+            member.debtors[whom.id] = 0
+          }
+          if (member.id === whom.id) {
+            member.balance += whoGroupBalance
+          }
+          updatedMembers.push({
+            id: member.id,
+            debtors: member.debtors,
+            balance: member.balance
+          })
+        })
+        this.$store.dispatch('updateGroup', {
+          id: group.id,
+          members: updatedMembers
+        })
+      })
     }
   }
 }
+
 </script>
 
 <style scoped>

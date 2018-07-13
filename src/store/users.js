@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 class User {
   constructor (name, picture, balance = 0, debtors = {}) {
     this.name = name
@@ -19,19 +20,16 @@ export default {
       state.users.push(user)
     },
     updateUser (state, user) {
-      console.log('Mutation updateUser')
-      let curUser = state.users.find(u => u.id === user.id)
-      return {
-        ...curUser,
-        ...user
-      }
+      console.log('Mutation updateUser', user)
+      let current = state.users.find(u => u.id === user.id)
+      current = user
     }
   },
   actions: {
     async fetchUsers ({commit}, payload) {
       const response = await fetch('http://localhost:3000/users')
       const users = await response.json()
-      console.log('fetchUsers', users)
+      console.log('async fetchUsers', users)
       commit('updateUsers', users)
     },
     async createUser ({commit}, {name, picture}) {
@@ -46,6 +44,7 @@ export default {
           body: JSON.stringify(newUser)
         })
       const user = await response.json()
+      console.log('async addUser', user)
       commit('addUser', user)
     },
     async updateUser ({commit}, {id, balance, debtors}) {
@@ -60,7 +59,7 @@ export default {
           body: JSON.stringify({balance: balance, debtors: debtors})
         })
       const updatedUser = await response.json()
-      console.log(updatedUser)
+      console.log('async updateUser', updatedUser)
       commit('updateUser', updatedUser)
     }
   },
@@ -77,10 +76,12 @@ export default {
           if (item.debtors[userId] < 0) {
             result.push({
               who: {
+                id: item.id,
                 name: item.name,
                 picture: item.picture
               },
               whom: {
+                id: +userId,
                 name: debtors.filter(u => u.id === +userId)[0].name,
                 picture: debtors.filter(u => u.id === +userId)[0].picture
               },

@@ -323,7 +323,7 @@ export default {
       this.groupUsers.forEach(user => {
         groupMembers.push(
           {
-            userId: user.id,
+            id: user.id,
             debtors: user.debtors,
             balance: user.balance
           }
