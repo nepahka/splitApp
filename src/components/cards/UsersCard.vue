@@ -15,6 +15,7 @@
         :key="user.id"
         class="alert"
         :class="user.balance >= 0 ? 'alert-success' : 'alert-danger'"
+        @click="openUserScreen(user.id)"
       >
         <img :src="picture(user.id)">
         {{ name(user.id) }} : {{ user.balance }}
@@ -50,6 +51,9 @@ export default {
     },
     name (id) {
       return this.$store.getters.getNameByUserId(id)
+    },
+    openUserScreen (userId) {
+      this.$router.push('/users/' + userId)
     }
   }
 }

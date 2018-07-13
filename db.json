@@ -14,7 +14,7 @@
     {
       "name": "Степан",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/2.jpg",
-      "balance": 83,
+      "balance": 61,
       "debtors": {
         "1": 0,
         "2": 0,
@@ -25,10 +25,10 @@
     {
       "name": "Людмила",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/1.jpg",
-      "balance": -50,
+      "balance": -28,
       "debtors": {
         "1": 0,
-        "2": -50,
+        "2": -28,
         "3": 0
       },
       "id": 3
@@ -72,22 +72,22 @@
       "name": "Ежедневная",
       "members": [
         {
-          "id": 3,
+          "id": 2,
           "debtors": {
             "1": 0,
-            "2": -17,
-            "3": 0
+            "2": 0,
+            "3": -5
           },
-          "balance": -17
+          "balance": -5
         },
         {
-          "id": 2,
+          "id": 3,
           "debtors": {
             "1": 0,
             "2": 0,
             "3": 0
           },
-          "balance": 17
+          "balance": 5
         }
       ],
       "id": 2
@@ -161,6 +161,36 @@
         }
       ],
       "id": 2
+    },
+    {
+      "groupId": 2,
+      "description": "Новая платежка",
+      "sum": 44,
+      "paidBy": {
+        "userId": 3,
+        "name": "Людмила"
+      },
+      "paidTo": [
+        {
+          "userId": 2,
+          "name": "Степан"
+        },
+        {
+          "userId": 3,
+          "name": "Людмила"
+        }
+      ],
+      "transactions": [
+        {
+          "userId": 2,
+          "sum": -22
+        },
+        {
+          "userId": 3,
+          "sum": 22
+        }
+      ],
+      "id": 3
     }
   ],
   "connections": [

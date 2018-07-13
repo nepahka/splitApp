@@ -53,6 +53,16 @@ export default {
       console.log('Вызов getPaymentByGroupId', id)
       return state.payments.filter(payment => payment.groupId === id)
     },
+    getPaymentsFromByUserId: (state, getters) => (id) => {
+      console.log('Вызов getPaymentsFromByUserId', id)
+      return state.payments.filter(payment => payment.paidBy.userId === id)
+    },
+    getPaymentsToByUserId: (state, getters) => (id) => {
+      console.log('Вызов getPaymentsToByUserId', id)
+      return state.payments.filter(payment => {
+        return payment.paidBy.userId !== id && payment.paidTo.filter(to => to.userId === id).length
+      })
+    },
     getRecalculateMembersByGroupId: (state, getters, rootState, rootGetters) => (id) => {
       let members = rootGetters.getMembersByGroupId(id)
       console.log('Вызов getRecalculateMembersByGroupId', id)
