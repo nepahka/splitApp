@@ -16,7 +16,7 @@
         <img :src="user.whom.picture">
         <b>{{ user.whom.name }}</b>
         <span class="sum">{{ Math.round10(user.sum, -2) }}</span>
-        <button type="button" class="close" @click="settleDebt(user)">
+        <button type="button" class="close" @click="isGroup ? settleGroupDebt(user) : settleDebt(user)">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -26,19 +26,21 @@
 
 <script>
 export default {
-  props: {
-  },
+  props: {},
   data () {
-    return {}
+    return {
+      isGroup: false
+    }
   },
-  watch: {
-  },
+  watch: {},
   computed: {
     debtors () {
       console.log('DEBTORS CARD')
       if (this.$route.params.id) {
+        this.isGroup = true
         return this.$store.getters.getDebtorsByGroupId(+this.$route.params.id)
       } else {
+        this.isGroup = false
         return this.$store.getters.getDebtors
       }
     }
@@ -85,6 +87,47 @@ export default {
           id: group.id,
           members: updatedMembers
         })
+      })
+    },
+    settleGroupDebt ({sum, who, whom}) {
+      let whoUser = this.$store.getters.getUsers.find(u => u.id === who.id)
+      let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
+
+      console.log('settleGroupDebt', sum, who, whom)
+      whoUser.balance -= sum
+      whoUser.debtors[whom.id] -= sum
+      whomUser.balance += sum
+
+      this.$store.dispatch('updateUser', {
+        id: whoUser.id,
+        balance: whoUser.balance,
+        debtors: whoUser.debtors
+      })
+      this.$store.dispatch('updateUser', {
+        id: whomUser.id,
+        balance: whomUser.balance,
+        debtors: whomUser.debtors
+      })
+      let updatedMembers = []
+      let whoGroupBalance = 0
+      this.$store.getters.getGroupById(+this.$route.params.id)[0].members.map(member => {
+        if (member.id === who.id) {
+          whoGroupBalance = member.balance
+          member.balance = 0
+          member.debtors[whom.id] = 0
+        }
+        if (member.id === whom.id) {
+          member.balance += whoGroupBalance
+        }
+        updatedMembers.push({
+          id: member.id,
+          debtors: member.debtors,
+          balance: member.balance
+        })
+      })
+      this.$store.dispatch('updateGroup', {
+        id: +this.$route.params.id,
+        members: updatedMembers
       })
     }
   }

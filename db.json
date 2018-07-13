@@ -1,93 +1,125 @@
 {
   "users": [
     {
-      "name": "asdfa",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/6.jpg",
-      "balance": 6.6666666667,
+      "name": "Петр",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/4.jpg",
+      "balance": -33,
       "debtors": {
-        "asdfa": 0,
-        "asdfas": 0,
-        "dfgfg": 0
+        "1": 0,
+        "2": -33,
+        "3": 0
       },
       "id": 1
     },
     {
-      "name": "asdfas",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/8.jpg",
-      "balance": 22599.6666666667,
+      "name": "Степан",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/2.jpg",
+      "balance": 83,
       "debtors": {
-        "asdfa": 0,
-        "asdfas": 0,
-        "dfgfg": 0
+        "1": 0,
+        "2": 0,
+        "3": 0
       },
       "id": 2
     },
     {
-      "name": "dfgfg",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/5.jpg",
-      "balance": -22606.3333333333,
+      "name": "Людмила",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/1.jpg",
+      "balance": -50,
       "debtors": {
-        "asdfa": -6.666666666598758,
-        "asdfas": -22599.6666666667,
-        "dfgfg": 0
+        "1": 0,
+        "2": -50,
+        "3": 0
       },
       "id": 3
     }
   ],
   "groups": [
     {
-      "name": "asdfasd",
+      "name": "Походная",
       "members": [
-        1,
-        2,
-        3
+        {
+          "id": 1,
+          "debtors": {
+            "1": 0,
+            "2": -33,
+            "3": 0
+          },
+          "balance": -33
+        },
+        {
+          "id": 3,
+          "debtors": {
+            "1": 0,
+            "2": -33,
+            "3": 0
+          },
+          "balance": -33
+        },
+        {
+          "id": 2,
+          "debtors": {
+            "1": 0,
+            "2": 0,
+            "3": 0
+          },
+          "balance": 66
+        }
       ],
       "id": 1
     },
     {
-      "name": "dfgfdh",
+      "name": "Ежедневная",
       "members": [
-        2,
-        3
+        {
+          "id": 3,
+          "debtors": {
+            "1": 0,
+            "2": -17,
+            "3": 0
+          },
+          "balance": -17
+        },
+        {
+          "id": 2,
+          "debtors": {
+            "1": 0,
+            "2": 0,
+            "3": 0
+          },
+          "balance": 17
+        }
       ],
       "id": 2
     }
   ],
   "payments": [
     {
-      "groupId": 1,
+      "groupId": 2,
       "description": "Новая платежка",
-      "sum": 30,
+      "sum": 34,
       "paidBy": {
-        "userId": 1,
-        "name": "asdfa"
+        "userId": 2,
+        "name": "Степан"
       },
       "paidTo": [
         {
-          "userId": 1,
-          "name": "asdfa"
-        },
-        {
           "userId": 2,
-          "name": "asdfas"
+          "name": "Степан"
         },
         {
           "userId": 3,
-          "name": "dfgfg"
+          "name": "Людмила"
         }
       ],
       "transactions": [
         {
-          "userId": 1,
-          "sum": 20
-        },
-        {
           "userId": 2,
-          "sum": -10
+          "sum": 17
         },
         {
           "userId": 3,
-          "sum": -10
+          "sum": -17
         }
       ],
       "id": 1
@@ -95,381 +127,51 @@
     {
       "groupId": 1,
       "description": "Новая платежка",
-      "sum": 40,
+      "sum": 99,
       "paidBy": {
         "userId": 2,
-        "name": "asdfas"
+        "name": "Степан"
       },
       "paidTo": [
         {
-          "userId": 1,
-          "name": "asdfa"
+          "userId": 2,
+          "name": "Степан"
         },
         {
-          "userId": 2,
-          "name": "asdfas"
+          "userId": 1,
+          "name": "Петр"
         },
         {
           "userId": 3,
-          "name": "dfgfg"
+          "name": "Людмила"
         }
       ],
       "transactions": [
         {
-          "userId": 1,
-          "sum": -13.3333333333
+          "userId": 2,
+          "sum": 66
         },
         {
-          "userId": 2,
-          "sum": 26.6666666667
+          "userId": 1,
+          "sum": -33
         },
         {
           "userId": 3,
-          "sum": -13.3333333333
+          "sum": -33
         }
       ],
       "id": 2
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 43,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 21.5
-        },
-        {
-          "userId": 3,
-          "sum": -21.5
-        }
-      ],
-      "id": 3
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 434,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 217
-        },
-        {
-          "userId": 3,
-          "sum": -217
-        }
-      ],
-      "id": 4
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 43,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 21.5
-        },
-        {
-          "userId": 3,
-          "sum": -21.5
-        }
-      ],
-      "id": 5
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 434,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 217
-        },
-        {
-          "userId": 3,
-          "sum": -217
-        }
-      ],
-      "id": 6
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 353,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 176.5
-        },
-        {
-          "userId": 3,
-          "sum": -176.5
-        }
-      ],
-      "id": 7
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 325,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 162.5
-        },
-        {
-          "userId": 3,
-          "sum": -162.5
-        }
-      ],
-      "id": 8
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 422,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 211
-        },
-        {
-          "userId": 3,
-          "sum": -211
-        }
-      ],
-      "id": 9
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 42,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 21
-        },
-        {
-          "userId": 3,
-          "sum": -21
-        }
-      ],
-      "id": 10
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 234,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 117
-        },
-        {
-          "userId": 3,
-          "sum": -117
-        }
-      ],
-      "id": 11
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 434,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 217
-        },
-        {
-          "userId": 3,
-          "sum": -217
-        }
-      ],
-      "id": 12
-    },
-    {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 43534,
-      "paidBy": {
-        "userId": 2,
-        "name": "asdfas"
-      },
-      "paidTo": [
-        {
-          "userId": 2,
-          "name": "asdfas"
-        },
-        {
-          "userId": 3,
-          "name": "dfgfg"
-        }
-      ],
-      "transactions": [
-        {
-          "userId": 2,
-          "sum": 21767
-        },
-        {
-          "userId": 3,
-          "sum": -21767
-        }
-      ],
-      "id": 13
     }
   ],
   "connections": [
     {
       "groupId": 1,
-      "userId": 1,
+      "userId": 2,
       "id": 1
     },
     {
       "groupId": 1,
-      "userId": 2,
+      "userId": 1,
       "id": 2
     },
     {
