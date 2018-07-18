@@ -16,20 +16,28 @@
         <img :src="user.whom.picture">
         <b>{{ user.whom.name }}</b>
         <span class="sum">{{ Math.round10(user.sum, -2) }}</span>
-        <button type="button" class="close" @click="isGroup ? settleGroupDebt(user) : settleDebt(user)">
+        <button type="button" class="close" @click="confirmSettleDebt(user)">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
     </div>
+    <confirm-modal v-if="confirmModal" :user="debtUser" @onCancel="cancelSettleDebt" @onConfirm="isGroup ? settleGroupDebt(debtUser) : settleDebt(debtUser)"></confirm-modal>
   </div>
 </template>
 
 <script>
+import ConfirmModal from '../modals/ConfirmModal.vue'
+
 export default {
+  components: {
+    ConfirmModal
+  },
   props: {},
   data () {
     return {
-      isGroup: false
+      confirmModal: false,
+      isGroup: false,
+      debtUser: null
     }
   },
   watch: {},
@@ -46,7 +54,16 @@ export default {
     }
   },
   methods: {
+    confirmSettleDebt (user) {
+      this.confirmModal = true
+      this.debtUser = user
+    },
+    cancelSettleDebt () {
+      this.confirmModal = false
+      this.debtUser = null
+    },
     settleDebt ({sum, who, whom}) {
+      this.confirmModal = false
       let whoUser = this.$store.getters.getUsers.find(u => u.id === who.id)
       let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
 
@@ -88,8 +105,34 @@ export default {
           members: updatedMembers
         })
       })
+      this.$store.dispatch('createPayment', {
+        groupId: 0,
+        description: 'Списан долг',
+        sum: -1 * sum,
+        paidBy: {
+          userId: who.id,
+          name: who.name
+        },
+        paidTo: [
+          {
+            userId: whom.id,
+            name: whom.name
+          }
+        ],
+        transactions: [
+          {
+            userId: who.id,
+            sum: -1 * sum
+          },
+          {
+            userId: whom.id,
+            sum: sum
+          }
+        ]
+      })
     },
     settleGroupDebt ({sum, who, whom}) {
+      this.confirmModal = false
       let whoUser = this.$store.getters.getUsers.find(u => u.id === who.id)
       let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
 
