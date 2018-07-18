@@ -137,9 +137,10 @@ export default {
       let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
 
       console.log('settleGroupDebt', sum, who, whom)
+      // хорошо перепроверить эту часть
       whoUser.balance -= sum
-      whoUser.debtors[whom.id] -= sum
       whomUser.balance += sum
+      whomUser.debtors[who.id] += sum
 
       this.$store.dispatch('updateUser', {
         id: whoUser.id,
@@ -171,6 +172,31 @@ export default {
       this.$store.dispatch('updateGroup', {
         id: +this.$route.params.id,
         members: updatedMembers
+      })
+      this.$store.dispatch('createPayment', {
+        groupId: +this.$route.params.id,
+        description: 'Списан долг',
+        sum: -1 * sum,
+        paidBy: {
+          userId: who.id,
+          name: who.name
+        },
+        paidTo: [
+          {
+            userId: whom.id,
+            name: whom.name
+          }
+        ],
+        transactions: [
+          {
+            userId: who.id,
+            sum: -1 * sum
+          },
+          {
+            userId: whom.id,
+            sum: sum
+          }
+        ]
       })
     }
   }
