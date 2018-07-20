@@ -1,30 +1,34 @@
 <template>
-  <div class="main">
-    <div class="main-row">
-      <groups-card
-        :groups="groups"
-        @showGroupsModal="isGroupsFormVisible = $event"
-      />
-      <history-card
-        @showPaymentModal="isPaymentFormVisible = $event"
-      />
-    </div>
-    <div class="main-row">
-      <users-card
-        :users="users"
-        @showUsersModal="isUsersFormVisible = $event"
-      />
-      <debtors-card :users="users"/>
-    </div>
-    <groups-form
-      v-if="isGroupsFormVisible"
-      @addGroup="addGroup"
+  <v-ons-page>
+    <v-ons-toolbar>
+      <div class="center">PieApp</div>
+    </v-ons-toolbar>
+    <br>
+    <v-ons-list-title>
+      <div class="left">Группы</div>
+      <div class="right">
+        <v-ons-button modifier="quiet" @click="$router.push({name: 'GroupsForm'})">Добавить</v-ons-button>
+      </div>
+    </v-ons-list-title>
+    <groups-card
+      :groups="groups"
     />
-    <users-form
-      v-if="isUsersFormVisible"
-      @addUser="addUser"
+    <br>
+    <v-ons-list-title>
+      <div class="left">Пользователи</div>
+      <div class="right">
+        <v-ons-button modifier="quiet" @click="$router.push({name: 'UsersForm'})">Добавить</v-ons-button>
+      </div>
+    </v-ons-list-title>
+    <users-card
+      :users="users"
     />
-  </div>
+    <br>
+    <v-ons-list-title>
+      <div class="left">Должники</div>
+    </v-ons-list-title>
+    <debtors-card :users="users"/>
+  </v-ons-page>
 </template>
 
 <script>
@@ -39,8 +43,7 @@ export default {
   components: {
     GroupsForm, UsersForm, UsersCard, GroupsCard, DebtorsCard, HistoryCard
   },
-  props: {
-  },
+  props: {},
   data () {
     return {
       isUsersFormVisible: false,
@@ -57,9 +60,6 @@ export default {
     }
   },
   methods: {
-    addUser () {
-      this.isUsersFormVisible = false
-    },
     addGroup () {
       this.isGroupsFormVisible = false
     }
@@ -67,8 +67,23 @@ export default {
 }
 </script>
 
-<style>
-  .card_header {
-    min-height: 38px
+<style scoped>
+  .list-title {
+    color: #1f1f21;
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    letter-spacing: 0;
+    font-weight: 400;
+    text-transform: none;
+    line-height: 30px;
+    padding: 0 6px 0 16px;
+  }
+  .list-title .left {
+    padding: 4px 0;
+  }
+  .button--quiet {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 </style>

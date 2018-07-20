@@ -1,50 +1,43 @@
 <template>
-  <div class="card">
-    <div class="card_header">
-      <h3>История платежей</h3>
-      <button
-        type="button"
-        class="btn btn-primary"
-        @click="showPaymentModal"
-      >Add payment
-      </button>
-    </div>
-    <div class="card_body">
-      <div
-        class="history-item alert alert-info"
-        v-for="payment in payments"
-        :key="payment.id"
-      >
-        <div class="history-item__description">
-          {{ payment.description }}
-        </div>
-        <div class="history-item__message">
-          Paid by {{ payment.paidBy.name }} for
+  <v-ons-list modifier="inset">
+    <v-ons-list-item
+      v-for="payment in currentPayments"
+      :key="payment.id"
+    >
+      <div class="center">
+        <span class="list-item__title">{{ payment.description }}</span>
+        <span class="list-item__subtitle">
+          {{ payment.paidBy.name }} заплатил за
           <span
             v-for="(paidUser, index) in payment.paidTo"
             :key="paidUser.id"
           >
             {{ paidToUsers(paidUser, index) }}
           </span>
-        </div>
-        <div class="history-item__count">
-          {{ payment.sum }}
-        </div>
+        </span>
       </div>
-    </div>
-  </div>
+      <div class="right">
+        {{ payment.sum }}
+      </div>
+    </v-ons-list-item>
+  </v-ons-list>
 </template>
 
 <script>
 export default {
   props: {
+    payments: Array
   },
   data () {
     return {}
   },
   computed: {
-    payments () {
-      return this.$store.getters.getPaymentByGroupId(+this.$route.params.id)
+    currentPayments () {
+      if (this.$route.params.id) {
+        return this.$store.getters.getPaymentByGroupId(+this.$route.params.id)
+      } else {
+        return this.payments
+      }
     }
   },
   methods: {
@@ -61,8 +54,5 @@ export default {
 </script>
 
 <style>
-  .history-item__count {
-    font-weight: bold;
-    font-size: 20px;
-  }
+
 </style>

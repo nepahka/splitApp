@@ -1,20 +1,34 @@
 <template>
-  <div class="main">
-    <div class="main-row">
-      <group-card/>
-      <history-card
-        @showPaymentModal="isPaymentFormVisible = $event"
-      />
-    </div>
-    <div class="main-row">
-      <users-card/>
-      <debtors-card/>
-    </div>
-    <payment-form
-      v-if="isPaymentFormVisible"
-      @history="addHistory"
-    />
-  </div>
+  <v-ons-page>
+    <v-ons-toolbar>
+      <div class="left">
+        <ons-back-button @click.prevent="$router.go(-1)">Назад</ons-back-button>
+      </div>
+      <div class="center">
+        {{ name }}
+      </div>
+      <div class="right">
+        <v-ons-toolbar-button @click="$router.push({name: 'PaymentForm'})">
+          Платеж
+        </v-ons-toolbar-button>
+      </div>
+    </v-ons-toolbar>
+    <br>
+    <v-ons-list-title>
+      <div class="left">Члены</div>
+    </v-ons-list-title>
+    <users-card/>
+    <br>
+    <v-ons-list-title>
+      <div class="left">Должники</div>
+    </v-ons-list-title>
+    <debtors-card/>
+    <br>
+    <v-ons-list-title>
+      <div class="left">История платежей</div>
+    </v-ons-list-title>
+    <history-card/>
+  </v-ons-page>
 </template>
 
 <script>
@@ -28,8 +42,7 @@ export default {
   components: {
     GroupCard, HistoryCard, PaymentForm, UsersCard, DebtorsCard
   },
-  props: {
-  },
+  props: {},
   data () {
     return {
       isPaymentFormVisible: false,
@@ -37,6 +50,13 @@ export default {
     }
   },
   computed: {
+    name () {
+      if (this.$route.params.id) {
+        return this.$store.getters.getGroupById(+this.$route.params.id)[0].name
+      } else {
+        return ''
+      }
+    }
   },
   methods: {
     addHistory () {
@@ -46,6 +66,23 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  .list-title {
+    color: #1f1f21;
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    letter-spacing: 0;
+    font-weight: 400;
+    text-transform: none;
+    line-height: 30px;
+    padding: 0 6px 0 16px;
+  }
+  .list-title .left {
+    padding: 4px 0;
+  }
+  .button--quiet {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
 </style>

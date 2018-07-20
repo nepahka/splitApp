@@ -32,6 +32,13 @@
         "3": 0
       },
       "id": 3
+    },
+    {
+      "name": "Семен",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/3.jpg",
+      "balance": 0,
+      "debtors": {},
+      "id": 4
     }
   ],
   "groups": [

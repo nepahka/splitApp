@@ -1,32 +1,22 @@
 <template>
-  <div class="card">
-    <div class="card_header">
-      <h3>Группы</h3>
-      <button
-        type="button"
-        class="btn btn-primary"
-        @click="showGroupsModal"
-      >
-        Add group
-      </button>
-    </div>
-    <div class="card_body">
-      <div
-        v-for="group in groups"
-        :key="group.id"
-        class="alert alert-secondary group"
-        @click="openGroup(group.id)"
-      >
-        <div class="group-name">
-          {{ group.name }}
-          {{ balance(group.id) }}
-        </div>
-        <div class="group-members">
-          <img v-for="member in members(group.id)" :src="member.picture">
-        </div>
+  <v-ons-list modifier="inset">
+    <v-ons-list-item
+      v-for="group in groups"
+      :key="group.id"
+      @click="openGroup(group.id)"
+    >
+      <div class="center">
+        {{ group.name }}
+        {{ balance(group.id) }}
       </div>
-    </div>
-  </div>
+      <div class="right">
+        <img v-for="member in members(group.id)" :src="member.picture">
+      </div>
+      <div class="right list-item__right">
+        <v-ons-icon icon="ion-ios-arrow-forward, material:md-arrow-forward"></v-ons-icon>
+      </div>
+    </v-ons-list-item>
+  </v-ons-list>
 </template>
 
 <script>
@@ -37,8 +27,7 @@ export default {
   data () {
     return {}
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     members (id) {
       return this.$store.getters.getMembersByGroupId(id)
@@ -48,9 +37,6 @@ export default {
         return sum + item.sum
       }, 0)
     },
-    showGroupsModal () {
-      this.$emit('showGroupsModal', true)
-    },
     openGroup (id) {
       this.$router.push('/groups/' + id)
     }
@@ -58,21 +44,13 @@ export default {
 }
 </script>
 
-<style>
-  .group {
-    display: flex;
-    align-items: center;
+<style scoped>
+  img {
+    width: 32px;
+    border-radius: 50%;
   }
 
-  .group-members {
-    margin-left: auto;
-  }
-
-  .group-members img {
-    margin-right: 0;
-  }
-
-  .group-members img ~ img {
+  img ~ img {
     margin-left: 12px;
   }
 </style>

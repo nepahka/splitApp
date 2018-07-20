@@ -9,10 +9,14 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
-    "server": "json-server --watch db.json"
+    "server": "json-server --watch db.json",
+    "ionicUp": "cp node_modules/ionicons/dist/css/* node_modules/onsenui/css/ionicons/css/; cp node_modules/ionicons/dist/fonts/* node_modules/onsenui/css/ionicons/fonts/;"
   },
   "dependencies": {
+    "ionicons": "^4.2.4",
+    "onsenui": "^2.10.3",
     "vue": "^2.5.2",
+    "vue-onsenui": "^2.6.1",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

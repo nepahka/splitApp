@@ -2,6 +2,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import VueOnsen from 'vue-onsenui'
+
+// Webpack CSS import
+import 'onsenui/css/onsenui.css'
+import 'onsenui/css/onsen-css-components.css'
+
+Vue.use(VueOnsen)
 
 function decimalAdjust (type, value, exp) {
   if (typeof exp === 'undefined' || +exp === 0) {

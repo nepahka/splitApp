@@ -11,9 +11,13 @@ class Payment {
 
 export default {
   state: {
-    payments: []
+    payments: [],
+    paidBy: ''
   },
   mutations: {
+    updatePaidBy (state, paidBy) {
+      state.paidBy = paidBy
+    },
     updatePayments (state, payments) {
       state.payments = payments
     },

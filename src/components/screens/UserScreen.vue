@@ -1,76 +1,28 @@
 <template>
-  <div class="main">
-    <div class="main-row">
-      <div class="card">
-        <div class="card_header">
-          <h3>Я платил</h3>
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="goBack"
-          >Назад
-          </button>
-        </div>
-        <div class="card_body">
-          <div
-            class="history-item alert alert-info"
-            v-for="payment in payByMe"
-            :key="payment.id"
-          >
-            <div class="history-item__description">
-              {{ payment.description }}
-            </div>
-            <div class="history-item__message">
-              Paid by {{ payment.paidBy.name }} for
-              <span
-                v-for="(paidUser, index) in payment.paidTo"
-                :key="paidUser.id"
-              >
-            {{ paidToUsers(paidUser, index) }}
-          </span>
-            </div>
-            <div class="history-item__count">
-              {{ payment.sum }}
-            </div>
-          </div>
-        </div>
+  <v-ons-page>
+    <v-ons-toolbar>
+      <div class="left">
+        <ons-back-button @click.prevent="$router.go(-1)">Назад</ons-back-button>
       </div>
-    </div>
-    <div class="main-row">
-      <div class="card">
-        <div class="card_header">
-          <h3>За меня платили</h3>
-        </div>
-        <div class="card_body">
-          <div
-            class="history-item alert alert-info"
-            v-for="payment in payToMe"
-            :key="payment.id"
-          >
-            <div class="history-item__description">
-              {{ payment.description }}
-            </div>
-            <div class="history-item__message">
-              Paid by {{ payment.paidBy.name }} for
-              <span
-                v-for="(paidUser, index) in payment.paidTo"
-                :key="paidUser.id"
-              >
-                {{ paidToUsers(paidUser, index) }}
-              </span>
-            </div>
-            <div class="history-item__count">
-              {{ paidToSum(payment) }}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+      <div class="center">{{ name }}</div>
+    </v-ons-toolbar>
+    <br>
+    <v-ons-list-title>Я платил</v-ons-list-title>
+    <history-card :payments="payByMe"/>
+    <br>
+    <v-ons-list-title>За меня платили</v-ons-list-title>
+    <history-card :payments="payToMe"/>
+    <br>
+  </v-ons-page>
 </template>
 
 <script>
+import HistoryCard from '../HistoryCard.vue'
+
 export default {
+  components: {
+    HistoryCard
+  },
   data () {
     return {}
   },
@@ -80,6 +32,9 @@ export default {
     },
     payToMe () {
       return this.$store.getters.getPaymentsToByUserId(+this.$route.params.userId)
+    },
+    name () {
+      return this.$store.getters.getNameByUserId(+this.$route.params.userId)
     }
   },
   methods: {
@@ -93,9 +48,6 @@ export default {
         return payment.transactions.find(u => u.userId === +this.$route.params.userId).sum
       }
       return 0
-    },
-    goBack () {
-      this.$router.go(-1)
     }
   }
 }

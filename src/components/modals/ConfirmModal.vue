@@ -1,20 +1,12 @@
 <template>
-  <div class="confirm-modal modal">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Списать долг</h5>
-        </div>
-        <div class="modal-body">
-          <div class="confirm-modal__text">Вы хотите списать долг <b>{{ user.who.name }}</b> перед <b>{{ user.whom.name }}</b>?   </div>
-        </div>
-        <div class="modal-footer">
-          <button class="confirm-modal__btn confirm-modal__btn--cancel btn btn-secondary" @click="onCancel">Нет</button>
-          <button class="confirm-modal__btn confirm-modal__btn--confirm btn btn-primary" @click="onConfirm">Да</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <v-ons-alert-dialog modifier="rowfooter" :visible.sync="isVisible">
+    <span slot="title">Списать долг</span>
+    {{ user.who.name }} перед {{ user.whom.name }}?
+    <template slot="footer">
+      <v-ons-alert-dialog-button  @click="onCancel">Нет</v-ons-alert-dialog-button>
+      <v-ons-alert-dialog-button @click="onConfirm">Да</v-ons-alert-dialog-button>
+    </template>
+  </v-ons-alert-dialog>
 </template>
 
 <script>
@@ -24,7 +16,7 @@ export default {
   },
   data () {
     return {
-
+      isVisible: true
     }
   },
   methods: {

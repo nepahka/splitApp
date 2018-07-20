@@ -1,25 +1,43 @@
 <template>
-  <div class="card">
-    <h1 class="display-4 center">Add User</h1>
-    <hr>
-    <div class="form-group">
-      <label>Name</label>
-      <input
-        v-model="name"
-        class="form-control"
-        type="text"
-        placeholder="Name"
-      >
-    </div>
-    <hr>
-    <button
-      type="button"
-      class="btn btn-success"
-      @click="addUser"
-    >
-      Add
-    </button>
-  </div>
+  <v-ons-page>
+    <v-ons-toolbar>
+      <div class="left">
+        <ons-back-button @click="$router.go(-1)">Назад</ons-back-button>
+      </div>
+      <div class="center">Новый пользователь</div>
+      <div class="right">
+        <v-ons-toolbar-button @click="addUser">
+          Готово
+        </v-ons-toolbar-button>
+      </div>
+    </v-ons-toolbar>
+    <v-ons-list>
+      <v-ons-list-item>
+        <div class="left">
+          <img :src="picture">
+        </div>
+        <div class="center">
+          <v-ons-list modifier="noborder">
+            <v-ons-list-item>
+              <v-ons-input
+                placeholder="Имя"
+                float
+                v-model="name"
+                type="text"
+              ></v-ons-input>
+            </v-ons-list-item>
+            <v-ons-list-item>
+              <v-ons-input
+                placeholder="Email"
+                float
+                type="text"
+              ></v-ons-input>
+            </v-ons-list-item>
+          </v-ons-list>
+        </div>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-page>
 </template>
 
 <script>
@@ -35,13 +53,18 @@ export default {
   },
   computed: {
   },
+  created () {
+    this.getPicture()
+  },
   methods: {
     async addUser () {
+      this.$router.go(-1)
+      await this.createUser()
+    },
+    async getPicture () {
       const response = await fetch('https://api.randomuser.me/?lego')
       const picture = await response.json()
       this.picture = picture.results[0].picture.thumbnail
-      this.$emit('addUser')
-      this.createUser()
     },
     createUser () {
       this.$store.dispatch('createUser', {
@@ -54,22 +77,9 @@ export default {
 </script>
 
 <style scoped>
-  .card {
-    position: fixed;
-    transform: translate(-50%, -50%);
-    width: 32rem;
-    padding: 30px;
-    text-align: left;
-    top: 50%;
-    left: 50%;
-    z-index: 1;
-  }
-
-  label {
-    font-size: 20px;
-  }
-
-  .center {
-    text-align: center;
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
   }
 </style>

@@ -1,113 +1,126 @@
 <template>
-  <div class="card">
-    <h1 class="display-4 center">Add Payment</h1>
-    <hr>
-    <div class="form-group">
-      <label>Description</label>
-      <input
-        v-model="description"
-        class="form-control"
-        type="text"
-        placeholder="Description"
-      >
-    </div>
-    <div class="form-group">
-      <label for="paidby">Paid by</label>
-      <select
-        id="paidby"
-        v-model="paidBy"
-        class="form-control"
-      >
-        <option
-          disabled
-          value=""
-        >
-          Выберите один из вариантов
-        </option>
-        <option
-          v-for="user in users"
-          :key="user.id"
-          :value="user"
-        >
-          {{ user.name }}
-        </option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Summa</label>
-      <input
-        v-model.number="paidSum"
-        class="form-control"
-        type="number"
-        placeholder="Введите сумму"
-      >
-    </div>
-    <div class="form-group">
-      <label>Paid to</label>
-      <div
+  <v-ons-page>
+    <v-ons-toolbar>
+      <div class="left">
+        <ons-back-button @click="$router.go(-1)">Назад</ons-back-button>
+      </div>
+      <div class="center">Новый платеж</div>
+      <div class="right">
+        <v-ons-toolbar-button @click="addPayment">
+          Готово
+        </v-ons-toolbar-button>
+      </div>
+    </v-ons-toolbar>
+    <br>
+    <v-ons-list-title>Имя платежа</v-ons-list-title>
+    <v-ons-list>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-input
+            float
+            v-model="description"
+            placeholder="Имя платежа"
+          >
+          </v-ons-input>
+        </div>
+      </v-ons-list-item>
+    </v-ons-list>
+    <br>
+    <v-ons-list-title>Кто платит</v-ons-list-title>
+    <v-ons-list>
+      <v-ons-list-item v-if="!paidId" @click="$router.push({name: 'PaymentFormUsers'})">
+        <div class="center list-item__center" >
+          Кто платит
+        </div>
+        <div class="right list-item__right">
+          <v-ons-icon icon="ion-ios-arrow-forward, material:md-forward"></v-ons-icon>
+        </div>
+      </v-ons-list-item>
+      <v-ons-list-item v-if="paidId" @click="$router.push({name: 'PaymentFormUsers'})">
+        <div class="left list-item__left">
+          <img :src="paidBy.picture">
+        </div>
+        <div class="center list-item__center">
+          {{ paidBy.name }}
+        </div>
+        <div class="right list-item__right">
+          <v-ons-icon icon="ion-ios-arrow-forward, material:md-forward"></v-ons-icon>
+        </div>
+      </v-ons-list-item>
+    </v-ons-list>
+    <br>
+    <v-ons-list-title>Сумма</v-ons-list-title>
+    <v-ons-list>
+      <v-ons-list-item>
+        <div class="center">
+          <v-ons-input
+            float
+            v-model.number="paidSum"
+            type="number"
+            placeholder="Введите сумму"
+          >
+          </v-ons-input>
+        </div>
+      </v-ons-list-item>
+    </v-ons-list>
+    <br>
+    <v-ons-list-title>За кого платят</v-ons-list-title>
+    <v-ons-list>
+      <v-ons-list-item
         v-for="(user, index) in users"
         :key="user.id"
-        class="user-item"
-        @click="toggleCheckbox(user)"
       >
-        <div class="user-item__checkbox">
-          <label
-            :for="'paidto-' + index"
-            class="form-check-label"
+        <label class="left">
+          <v-ons-checkbox
+            :input-id="'paidto-' + index"
+            :value="user.id"
+            v-model="paidToIds"
+            @change="toggleCheckbox(user)"
           >
-            <input
-              :id="'paidto-' + index"
-              :value="user"
-              :checked="isSelected(user)"
-              type="checkbox"
-            >
-          </label>
-        </div>
-        <div class="user-item__img">
-          <img
-            :src="user.picture"
-          >
-        </div>
-        <div class="user-item__name">
+          </v-ons-checkbox>
+        </label>
+        <label :for="'paidto-' + index" class="left">
+          <img :src="user.picture">
+        </label>
+        <label :for="'paidto-' + index" class="center">
           {{ user.name }}
+        </label>
+        <!--<div class="right list-item__right">-->
+          <!--<v-ons-icon icon="ion-ios-color-wand, material:md-color-wand"></v-ons-icon>-->
+        <!--</div>-->
+        <div class="right" v-show="isSelected(user.id)">
+          {{ calcDebt(user) }}
         </div>
-        <input
-          v-show="isSelected(user)"
-          :value="calcDebt(user)"
-          class="user-item__debt-input"
-          type="number"
-          placeholder=""
-          @click.stop=""
-        >
-      </div>
-    </div>
-    <button
-      type="button"
-      class="btn btn-success"
-      @click="addPayment"
-    >
-      Add
-    </button>
-  </div>
+      </v-ons-list-item>
+    </v-ons-list>
+  </v-ons-page>
 </template>
 
 <script>
+import PaymentFormUsers from './paymentForm/PaymentFormUsers.vue'
+
 export default {
+  components: {
+    PaymentFormUsers
+  },
   name: 'AddPaymentForm',
   props: {},
   data () {
     return {
       debt: [],
-      paidBy: '',
       paidTo: [],
+      paidToIds: [],
       paidSum: '',
       debtors: {},
-      description: 'Новая платежка',
+      description: '',
       transactions: [],
       groupUsers: []
     }
   },
   computed: {
+    paidId () {
+      return this.$store.state.payments.paidBy
+    },
     users () {
       return this.$store.getters.getMembersByGroupId(+this.$route.params['id'])
     },
@@ -116,24 +129,29 @@ export default {
     },
     allSelected: {
       get () {
-        return this.users ? this.paidTo.length === this.users.length : true
+        return this.users ? this.paidToIds.length === this.users.length : true
       },
       set (value) {
-        var selected = []
+        let selected = []
+        let selectedIds = []
 
         if (value) {
           this.users.forEach(function (user) {
             selected.push(user)
+            selectedIds.push('' + user.id + '')
           })
         }
 
         this.paidTo = selected
+        this.paidToIds = selectedIds
       }
+    },
+    paidBy () {
+      return this.users.find(u => u.id === +this.paidId)
     }
   },
   created: function () {
     this.allSelected = true
-    this.paidBy = this.users[0]
   },
   methods: {
     toggleCheckbox (user) {
@@ -151,8 +169,8 @@ export default {
       }
       return Math.round10(this.paidSum / this.paidTo.length, -2)
     },
-    isSelected (user) {
-      return this.paidTo.includes(user)
+    isSelected (id) {
+      return this.paidToIds.includes('' + id + '')
     },
     addPayment () {
       // todo: Пересмотреть тут все очень внимательно
@@ -165,7 +183,7 @@ export default {
     calculateBalance () {
       let self = this
       const paidByUserSum = {
-        userId: this.paidBy.id,
+        id: this.paidBy.id,
         sum: +this.paidSum.toFixed(10)
       }
       this.paidBy.balance = +(this.paidBy.balance + this.paidSum).toFixed(10)
@@ -338,66 +356,17 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .card {
-    position: fixed;
-    transform: translate(-50%, -50%);
-    width: 32rem;
-    padding: 30px;
-    text-align: left;
-    top: 50%;
-    left: 50%;
+  .user-item__debt-input {
+    width: 80px;
+  }
+
+  img {
+    width: 32px;
+    border-radius: 50%;
   }
 
   label {
-    font-size: 20px;
-  }
-
-  .center {
-    text-align: center;
-  }
-
-  .user-item {
-    display: flex;
-    align-items: center;
-    height: 40px;
-  }
-
-  .user-item ~ .user-item {
-    border-top: 1px solid #eee;
-  }
-
-  .user-item__img {
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-    margin-left: 12px;
-    border-radius: 50%;
-    overflow: hidden;
-  }
-
-  .user-item__img img {
-    width: inherit;
-    height: inherit;
-  }
-
-  .user-item__checkbox {
-    position: relative;
-    top: -3px;
-  }
-
-  .user-item__name {
-
-  }
-
-  .user-item__debt-input {
-    width: 80px;
-    text-align: right;
-    border: none;
-    margin-left: auto;
-    height: 39px;
-    outline: none;
-    padding: 0;
+    margin-bottom: 0;
   }
 </style>

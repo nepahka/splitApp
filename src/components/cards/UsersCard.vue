@@ -1,36 +1,29 @@
 <template>
-  <div class="card">
-    <div class="card_header">
-      <h3>Список пользователей</h3>
-      <button
-        type="button"
-        class="btn btn-primary"
-        @click="showUsersModal"
-      >Add user
-      </button>
-    </div>
-    <div class="card_body">
-      <div
-        v-for="user in members"
-        :key="user.id"
-        class="alert"
-        :class="user.balance >= 0 ? 'alert-success' : 'alert-danger'"
-        @click="openUserScreen(user.id)"
-      >
+  <v-ons-list modifier="inset">
+    <v-ons-list-item
+      tappable
+      v-for="user in members"
+      :key="user.id"
+      @click="openUserScreen(user.id)"
+    >
+      <div class="left">
         <img :src="picture(user.id)">
+      </div>
+      <div class="center">
         {{ name(user.id) }} : {{ user.balance }}
       </div>
-    </div>
-  </div>
+      <div class="right list-item__right">
+        <v-ons-icon icon="ion-ios-arrow-forward, material:md-arrow-forward"></v-ons-icon>
+      </div>
+    </v-ons-list-item>
+  </v-ons-list>
 </template>
 
 <script>
 export default {
-  props: {
-  },
+  props: {},
   data () {
-    return {
-    }
+    return {}
   },
   computed: {
     members () {
@@ -43,9 +36,6 @@ export default {
     }
   },
   methods: {
-    showUsersModal () {
-      this.$emit('showUsersModal', true)
-    },
     picture (id) {
       return this.$store.getters.getPictureByUserId(id)
     },
@@ -59,10 +49,9 @@ export default {
 }
 </script>
 
-<style>
-  .alert img {
+<style scoped>
+  img {
     width: 32px;
     border-radius: 50%;
-    margin-right: 12px;
   }
 </style>

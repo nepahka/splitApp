@@ -1,28 +1,27 @@
 <template>
-  <div class="card">
-    <div class="card_header">
-      <h3>Кто кому должен</h3>
-    </div>
-    <div class="card_body">
-      <div
-        v-for="user in debtors"
-        :key="user.who.picture"
-        class="alert alert-warning"
-        role="alert"
-      >
-        <img :src="user.who.picture">
+  <v-ons-list modifier="inset" class="debtors-card">
+    <v-ons-list-item
+      v-for="user in debtors"
+      :key="user.who.picture"
+    >
+      <div class="center">
         <b>{{ user.who.name }}</b>
-        owes
+        <img :src="user.who.picture">
+        должен
+        <b>{{  user.whom.name }}</b>
         <img :src="user.whom.picture">
-        <b>{{ user.whom.name }}</b>
-        <span class="sum">{{ Math.round10(user.sum, -2) }}</span>
-        <button type="button" class="close" @click="confirmSettleDebt(user)">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <span class="sum">: {{ -Math.round10(user.sum, -2) }}</span>
       </div>
-    </div>
-    <confirm-modal v-if="confirmModal" :user="debtUser" @onCancel="cancelSettleDebt" @onConfirm="isGroup ? settleGroupDebt(debtUser) : settleDebt(debtUser)"></confirm-modal>
-  </div>
+      <div class="right">
+        <v-ons-icon
+          icon="ion-ios-arrow-dropup, material:md-arrow-dropup"
+          size="18px, material: 18px"
+          @click="confirmSettleDebt(user)"
+        ></v-ons-icon>
+      </div>
+      <confirm-modal v-if="confirmModal" :user="debtUser" @onCancel="cancelSettleDebt" @onConfirm="isGroup ? settleGroupDebt(debtUser) : settleDebt(debtUser)"></confirm-modal>
+    </v-ons-list-item>
+  </v-ons-list>
 </template>
 
 <script>
@@ -212,14 +211,20 @@ export default {
     margin-left: 4px;
   }
 
-  .alert img:first-child {
-    margin-left: 0;
-  }
-
   .sum {
     font-size: 16px;
     font-weight: bold;
     margin-left: 10px;
     color: darkslategrey;
+  }
+  img {
+    width: 32px;
+    border-radius: 50%;
+  }
+  .debtors-card img {
+    margin: 0 6px
+  }
+  b ~ b {
+    margin-left: 6px;
   }
 </style>

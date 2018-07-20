@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <router-view v-if="loading"/>
+    <v-ons-navigator
+      v-if="loading"
+      :page-stack="pageStack"
+      :pop-page="goBack"
+    ></v-ons-navigator>
+    <!--<router-view />-->
   </div>
 </template>
 
@@ -9,6 +14,7 @@ export default {
   name: 'App',
   data () {
     return {
+      pageStack: [],
       loading: false
     }
   },
@@ -22,10 +28,31 @@ export default {
         })
       })
     })
+    /* Define how routes should be mapped to the page stack.
+     * This assumes all the routes contain VOnsPage components
+     * and are provided in the 'default' view.
+     * For nested named routes or routes that for some reason
+     * should not be mapped in VOnsNavigator, filter them out here.
+     */
+    const mapRouteStack = route => this.pageStack = route.matched.map(m => m.components.default)
+    /* Set initial pageStack depending on current
+     * route instead of always pushing 'Home' page
+     */
+    mapRouteStack(this.$route)
+    /* On route change, reset the pageStack to the next route */
+    this.$router.beforeEach((to, from, next) => mapRouteStack(to) && next())
   },
   computed: {
   },
   methods: {
+    /* Override default pop behavior and delegate it to the router */
+    goBack () {
+      debugger
+      // Go to the parent route component
+      console.log(this.$route.matched[this.$route.matched.length - 2].name)
+      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
+      // this.$router.go(-1); // Could work but might be misleading in some situations
+    }
   },
   watch: {}
 }

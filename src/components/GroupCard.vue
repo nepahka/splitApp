@@ -1,18 +1,13 @@
 <template>
-  <div class="card">
-    <div class="card_header">
-      <h3>Текущая группа</h3>
-      <button
-        type="button"
-        class="btn btn-primary"
-        @click="goBack"
-      >Назад
-      </button>
-    </div>
-    <div class="card_body">
-      {{ name }}
-    </div>
-  </div>
+  <v-ons-list modifier="inset">
+    <v-ons-list-item>
+      <div class="left">
+      </div>
+      <div class="center">
+        {{ name }}
+      </div>
+    </v-ons-list-item>
+  </v-ons-list>
 </template>
 
 <script>
@@ -29,11 +24,6 @@ export default {
       } else {
         return ''
       }
-    }
-  },
-  methods: {
-    goBack () {
-      this.$router.push('/')
     }
   }
 }
