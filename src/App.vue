@@ -10,6 +10,8 @@
 </template>
 
 <script>
+/* eslint-disable no-return-assign */
+
 export default {
   name: 'App',
   data () {

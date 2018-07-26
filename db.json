@@ -3,33 +3,36 @@
     {
       "name": "Петр",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/4.jpg",
-      "balance": -33,
+      "balance": -98,
       "debtors": {
         "1": 0,
-        "2": -33,
-        "3": 0
+        "2": -29,
+        "3": -69,
+        "4": 0
       },
       "id": 1
     },
     {
       "name": "Степан",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/2.jpg",
-      "balance": 61,
+      "balance": 29,
       "debtors": {
         "1": 0,
         "2": 0,
-        "3": 0
+        "3": 0,
+        "4": 0
       },
       "id": 2
     },
     {
       "name": "Людмила",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/1.jpg",
-      "balance": -28,
+      "balance": 69,
       "debtors": {
         "1": 0,
-        "2": -28,
-        "3": 0
+        "2": 0,
+        "3": 0,
+        "4": 0
       },
       "id": 3
     },
@@ -37,7 +40,12 @@
       "name": "Семен",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/3.jpg",
       "balance": 0,
-      "debtors": {},
+      "debtors": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+      },
       "id": 4
     }
   ],
@@ -49,28 +57,31 @@
           "id": 1,
           "debtors": {
             "1": 0,
-            "2": -33,
-            "3": 0
+            "2": -34,
+            "3": 0,
+            "4": 0
           },
-          "balance": -33
+          "balance": -98
         },
         {
           "id": 3,
           "debtors": {
             "1": 0,
-            "2": -33,
-            "3": 0
+            "2": -34,
+            "3": 0,
+            "4": 0
           },
-          "balance": -33
+          "balance": -46
         },
         {
           "id": 2,
           "debtors": {
             "1": 0,
             "2": 0,
-            "3": 0
+            "3": 0,
+            "4": 0
           },
-          "balance": 66
+          "balance": 34
         }
       ],
       "id": 1
@@ -198,6 +209,48 @@
         }
       ],
       "id": 3
+    },
+    {
+      "groupId": 1,
+      "description": "Тест",
+      "sum": 110,
+      "paidBy": {
+        "userId": 3,
+        "name": "Людмила"
+      },
+      "paidTo": [
+        {
+          "userId": 2,
+          "name": "Степан"
+        },
+        {
+          "userId": 1,
+          "name": "Петр"
+        },
+        {
+          "userId": 3,
+          "name": "Людмила"
+        }
+      ],
+      "transactions": [
+        {
+          "userId": 2,
+          "sum": -32
+        },
+        {
+          "userId": 1,
+          "sum": -65
+        },
+        {
+          "userId": 3,
+          "sum": -13
+        },
+        {
+          "id": 3,
+          "sum": 110
+        }
+      ],
+      "id": 4
     }
   ],
   "connections": [

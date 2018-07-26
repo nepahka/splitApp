@@ -99,6 +99,9 @@ export default {
     getPictureByUserId: (state, getters) => (id) => {
       let user = state.users.filter(u => u.id === id)[0]
       return user.picture
+    },
+    getUserById: (state, getters) => (id) => {
+      return state.users.filter(u => u.id === id)[0]
     }
   }
 }

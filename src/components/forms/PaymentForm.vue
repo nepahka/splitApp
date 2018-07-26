@@ -12,25 +12,25 @@
       </div>
     </v-ons-toolbar>
     <br>
-    <v-ons-list-title>Имя платежа</v-ons-list-title>
+    <v-ons-list-title>Описание</v-ons-list-title>
     <v-ons-list>
       <v-ons-list-item>
         <div class="center">
           <v-ons-input
             float
             v-model="description"
-            placeholder="Имя платежа"
+            placeholder="Описание"
           >
           </v-ons-input>
         </div>
       </v-ons-list-item>
     </v-ons-list>
     <br>
-    <v-ons-list-title>Кто платит</v-ons-list-title>
+    <v-ons-list-title>Кто</v-ons-list-title>
     <v-ons-list>
       <v-ons-list-item v-if="!paidId" @click="$router.push({name: 'PaymentFormUsers'})">
-        <div class="center list-item__center" >
-          Кто платит
+        <div class="center list-item__center" style="height: 55px; color: #999;">
+          Выберите
         </div>
         <div class="right list-item__right">
           <v-ons-icon icon="ion-ios-arrow-forward, material:md-forward"></v-ons-icon>
@@ -57,15 +57,27 @@
             float
             v-model.number="paidSum"
             type="number"
-            placeholder="Введите сумму"
+            placeholder="Сумма"
           >
           </v-ons-input>
         </div>
       </v-ons-list-item>
     </v-ons-list>
     <br>
-    <v-ons-list-title>За кого платят</v-ons-list-title>
+    <v-ons-list-title>За кого</v-ons-list-title>
     <v-ons-list>
+      <ons-list-item>
+        <label class="center" for="switch1">
+          Равные части
+        </label>
+        <div class="right">
+          <v-ons-switch
+            input-id="switch1"
+            v-model="isEqually"
+          >
+          </v-ons-switch>
+        </div>
+      </ons-list-item>
       <v-ons-list-item
         v-for="(user, index) in users"
         :key="user.id"
@@ -85,11 +97,22 @@
         <label :for="'paidto-' + index" class="center">
           {{ user.name }}
         </label>
-        <!--<div class="right list-item__right">-->
-          <!--<v-ons-icon icon="ion-ios-color-wand, material:md-color-wand"></v-ons-icon>-->
-        <!--</div>-->
-        <div class="right" v-show="isSelected(user.id)">
-          {{ calcDebt(user) }}
+        <div class="right" v-show="isSelected(user.id), !editSumVisible(user.id)">
+          {{ calcDebt(user) }}{{ '&nbsp;&nbsp;' }}
+          <v-ons-icon v-show="!isEqually" icon="ion-ios-color-wand, material:md-color-wand" @click="editSum(user.id)"></v-ons-icon>
+        </div>
+        <div class="right" v-show="editSumVisible(user.id)">
+          <v-ons-input
+            :ref="'sum' + user.id"
+            float
+            v-model.number="pieSum"
+            @change="changeSum(user)"
+            @blur="editableSumId = ''"
+            @keyup.enter="editableSumId = ''"
+            type="number"
+            placeholder=""
+          >
+          </v-ons-input>
         </div>
       </v-ons-list-item>
     </v-ons-list>
@@ -114,10 +137,16 @@ export default {
       debtors: {},
       description: '',
       transactions: [],
-      groupUsers: []
+      groupUsers: [],
+      editableSumId: '',
+      pieSum: 0,
+      isEqually: true
     }
   },
   computed: {
+    paidPies () {
+      return this.$store.state.payments.paidPies
+    },
     paidId () {
       return this.$store.state.payments.paidBy
     },
@@ -151,12 +180,33 @@ export default {
     }
   },
   created: function () {
-    this.allSelected = true
+    this.allSelected = false
   },
   methods: {
+    editSumVisible (id) {
+      return id === this.editableSumId
+    },
+    editSum (id) {
+      this.editableSumId = id
+      this.pieSum = 0
+      this.$nextTick(() => {
+        this.$refs['sum' + this.editableSumId][0].$el.children[0].focus()
+      })
+    },
+    changeSum (user) {
+      this.paidTo[this.paidTo.indexOf(user)].debt = this.pieSum
+      this.$store.commit('updatePaidPies', {
+        userId: user.id,
+        sum: this.pieSum
+      })
+      this.paidSum = this.paidPies.reduce((previousValue, currentItem) => {
+        return previousValue + currentItem.sum
+      }, 0)
+    },
     toggleCheckbox (user) {
       if (this.paidTo.includes(user)) {
         this.paidTo.splice(this.paidTo.findIndex(u => u === user), 1)
+        this.$store.commit('removePaidPie', user.id)
       } else {
         this.paidTo.push(user)
       }
@@ -164,10 +214,26 @@ export default {
     calcDebt (user) {
       if (this.paidTo.length) {
         if (this.paidTo.includes(user)) {
-          this.paidTo[this.paidTo.indexOf(user)].debt = (this.paidSum / this.paidTo.length)
+          let isExist = !!this.paidPies.find(u => u.userId === user.id)
+          if (this.isEqually) {
+            this.paidTo[this.paidTo.indexOf(user)].debt = (this.paidSum / this.paidTo.length)
+            this.$store.commit('updatePaidPies', {
+              userId: user.id,
+              sum: this.paidSum / this.paidTo.length
+            })
+          }
+          if (isExist) {
+            return Math.round10(this.paidPies.find(u => u.userId === user.id).sum, -2)
+          } else {
+            this.$store.commit('updatePaidPies', {
+              userId: user.id,
+              sum: 0
+            })
+            return 0
+          }
         }
       }
-      return Math.round10(this.paidSum / this.paidTo.length, -2)
+      return 0
     },
     isSelected (id) {
       return this.paidToIds.includes('' + id + '')
@@ -368,5 +434,15 @@ export default {
 
   label {
     margin-bottom: 0;
+  }
+  .list-item__right .text-input {
+    text-align: right;
+  }
+</style>
+
+<style>
+  .list-item__right .text-input {
+    text-align: right;
+    width: 80px;
   }
 </style>

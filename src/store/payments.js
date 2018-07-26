@@ -1,5 +1,5 @@
 class Payment {
-  constructor (groupId, description, sum, paidBy, paidTo, transactions) {
+  constructor(groupId, description, sum, paidBy, paidTo, transactions) {
     this.groupId = groupId
     this.description = description
     this.sum = sum
@@ -12,11 +12,24 @@ class Payment {
 export default {
   state: {
     payments: [],
-    paidBy: ''
+    paidBy: '',
+    paidPies: []
   },
   mutations: {
     updatePaidBy (state, paidBy) {
       state.paidBy = paidBy
+    },
+    updatePaidPies (state, {userId, sum}) {
+      if (state.paidPies.find(u => u.userId === userId)) {
+        state.paidPies.find(u => u.userId === userId).sum = sum
+      } else {
+        state.paidPies.push({userId: userId, sum: sum})
+      }
+      console.log('state.paidPies', state.paidPies)
+    },
+    removePaidPie (state, userId) {
+      state.paidPies.splice(state.paidPies.findIndex(u => u.userId === userId), 1)
+      console.log('state.paidPies', state.paidPies)
     },
     updatePayments (state, payments) {
       state.payments = payments
@@ -52,6 +65,9 @@ export default {
   getters: {
     getPayments (state) {
       return state.payments
+    },
+    getPaidPies (state) {
+      return state.paidPies
     },
     getPaymentByGroupId: (state, getters) => (id) => {
       console.log('Вызов getPaymentByGroupId', id)
