@@ -2,7 +2,7 @@
   <v-ons-page>
     <v-ons-toolbar>
       <div class="left">
-        <ons-back-button @click="$router.go(-1)">Назад</ons-back-button>
+        <ons-back-button>Назад</ons-back-button>
       </div>
       <div class="center">Кто платит</div>
     </v-ons-toolbar>

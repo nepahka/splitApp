@@ -3,11 +3,11 @@
     {
       "name": "Петр",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/4.jpg",
-      "balance": -98,
+      "balance": -29,
       "debtors": {
         "1": 0,
         "2": -29,
-        "3": -69,
+        "3": 0,
         "4": 0
       },
       "id": 1
@@ -27,7 +27,7 @@
     {
       "name": "Людмила",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/1.jpg",
-      "balance": 69,
+      "balance": 0,
       "debtors": {
         "1": 0,
         "2": 0,
@@ -47,6 +47,13 @@
         "4": 0
       },
       "id": 4
+    },
+    {
+      "name": "Миша",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/4.jpg",
+      "balance": 0,
+      "debtors": {},
+      "id": 5
     }
   ],
   "groups": [
@@ -61,7 +68,7 @@
             "3": 0,
             "4": 0
           },
-          "balance": -98
+          "balance": 0
         },
         {
           "id": 3,
@@ -71,7 +78,7 @@
             "3": 0,
             "4": 0
           },
-          "balance": -46
+          "balance": -144
         },
         {
           "id": 2,
@@ -251,6 +258,32 @@
         }
       ],
       "id": 4
+    },
+    {
+      "groupId": 0,
+      "description": "Списан долг",
+      "sum": 69,
+      "paidBy": {
+        "userId": 1,
+        "name": "Петр"
+      },
+      "paidTo": [
+        {
+          "userId": 3,
+          "name": "Людмила"
+        }
+      ],
+      "transactions": [
+        {
+          "userId": 1,
+          "sum": 69
+        },
+        {
+          "userId": 3,
+          "sum": -69
+        }
+      ],
+      "id": 5
     }
   ],
   "connections": [

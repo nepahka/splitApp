@@ -2,7 +2,7 @@
   <v-ons-page>
     <v-ons-toolbar>
       <div class="left">
-        <ons-back-button @click="$router.go(-1)">Назад</ons-back-button>
+        <ons-back-button>Назад</ons-back-button>
       </div>
       <div class="center">Новый платеж</div>
       <div class="right">
@@ -244,7 +244,7 @@ export default {
       this.calculateDebtors()
       this.createPayment()
       this.updateUsers()
-      this.$emit('history')
+      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
     },
     calculateBalance () {
       let self = this

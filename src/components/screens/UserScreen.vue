@@ -2,7 +2,7 @@
   <v-ons-page>
     <v-ons-toolbar>
       <div class="left">
-        <ons-back-button @click.prevent="$router.go(-1)">Назад</ons-back-button>
+        <ons-back-button>Назад</ons-back-button>
       </div>
       <div class="center">{{ name }}</div>
     </v-ons-toolbar>

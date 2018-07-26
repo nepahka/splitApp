@@ -2,7 +2,7 @@
   <v-ons-list modifier="inset" class="debtors-card">
     <v-ons-list-item
       v-for="user in debtors"
-      :key="user.who.picture"
+      :key="user.id"
     >
       <div class="center">
         <b>{{ user.who.name }}</b>

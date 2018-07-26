@@ -1,5 +1,5 @@
 class Payment {
-  constructor(groupId, description, sum, paidBy, paidTo, transactions) {
+  constructor (groupId, description, sum, paidBy, paidTo, transactions) {
     this.groupId = groupId
     this.description = description
     this.sum = sum

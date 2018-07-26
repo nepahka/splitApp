@@ -2,7 +2,7 @@
   <v-ons-page>
     <v-ons-toolbar>
       <div class="left">
-        <ons-back-button @click="$router.go(-1)">Назад</ons-back-button>
+        <ons-back-button>Назад</ons-back-button>
       </div>
       <div class="center">Новый пользователь</div>
       <div class="right">
@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     async addUser () {
-      this.$router.go(-1)
+      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
       await this.createUser()
     },
     async getPicture () {

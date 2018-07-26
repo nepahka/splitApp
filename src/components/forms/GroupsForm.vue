@@ -2,7 +2,7 @@
   <v-ons-page>
     <v-ons-toolbar>
       <div class="left">
-        <ons-back-button @click.prevent="$router.go(-1)">Назад</ons-back-button>
+        <ons-back-button>Назад</ons-back-button>
       </div>
       <div class="center">Новая группа</div>
       <div class="right">
@@ -12,19 +12,19 @@
       </div>
     </v-ons-toolbar>
     <br>
-    <v-ons-list-title>Имя группы</v-ons-list-title>
+    <v-ons-list-title>Имя</v-ons-list-title>
     <v-ons-list>
       <v-ons-list-item>
         <v-ons-input
           v-model="name"
           float
           type="text"
-          placeholder="Имя группы"
+          placeholder="Имя"
         ></v-ons-input>
       </v-ons-list-item>
     </v-ons-list>
     <br>
-    <v-ons-list-title>Члены группы</v-ons-list-title>
+    <v-ons-list-title>Члены</v-ons-list-title>
     <v-ons-list>
       <v-ons-list-item
         v-for="(user, index) in users"
@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     addGroup () {
-      this.$router.go(-1)
+      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
       let resultMembers = []
       this.members.map(uID => {
         resultMembers.push(
