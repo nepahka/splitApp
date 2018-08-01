@@ -97,7 +97,7 @@
         <label :for="'paidto-' + index" class="center">
           {{ user.name }}
         </label>
-        <div class="right" v-show="isSelected(user.id), !editSumVisible(user.id)">
+        <div class="right" v-show="isSelected(user.id) && !editSumVisible(user.id)">
           {{ calcDebt(user) }}{{ '&nbsp;&nbsp;' }}
           <v-ons-icon v-show="!isEqually" icon="ion-ios-color-wand, material:md-color-wand" @click="editSum(user.id)"></v-ons-icon>
         </div>
@@ -144,11 +144,24 @@ export default {
     }
   },
   computed: {
-    paidPies () {
-      return this.$store.state.payments.paidPies
+    paidPies: {
+      get () {
+        return this.$store.state.payments.paidPies
+      },
+      set (value) {
+        this.$store.state.payments.paidPies = value
+      }
     },
-    paidId () {
-      return this.$store.state.payments.paidBy
+    paidId: {
+      get () {
+        return this.$store.state.payments.paidBy
+      },
+      set (value) {
+        this.$store.state.payments.paidBy = value
+      }
+    },
+    paidBy () {
+      return this.users.find(u => u.id === +this.paidId)
     },
     users () {
       return this.$store.getters.getMembersByGroupId(+this.$route.params['id'])
@@ -174,9 +187,6 @@ export default {
         this.paidTo = selected
         this.paidToIds = selectedIds
       }
-    },
-    paidBy () {
-      return this.users.find(u => u.id === +this.paidId)
     }
   },
   created: function () {
@@ -244,12 +254,17 @@ export default {
       this.calculateDebtors()
       this.createPayment()
       this.updateUsers()
+      this.clean()
       this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
+    },
+    clean () {
+      this.paidPies = []
+      this.paidId = null
     },
     calculateBalance () {
       let self = this
       const paidByUserSum = {
-        id: this.paidBy.id,
+        userId: this.paidBy.id,
         sum: +this.paidSum.toFixed(10)
       }
       this.paidBy.balance = +(this.paidBy.balance + this.paidSum).toFixed(10)

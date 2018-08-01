@@ -1,109 +1,60 @@
 {
   "users": [
     {
-      "name": "Петр",
+      "name": "Маша",
       "picture": "https://randomuser.me/api/portraits/thumb/lego/4.jpg",
-      "balance": -29,
+      "balance": -245,
       "debtors": {
         "1": 0,
-        "2": -29,
-        "3": 0,
-        "4": 0
+        "2": 0,
+        "3": -245
       },
       "id": 1
     },
     {
-      "name": "Степан",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/2.jpg",
-      "balance": 29,
+      "name": "Вася",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/6.jpg",
+      "balance": -2344.5,
       "debtors": {
         "1": 0,
         "2": 0,
-        "3": 0,
-        "4": 0
+        "3": -2344.5
       },
       "id": 2
     },
     {
-      "name": "Людмила",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/1.jpg",
-      "balance": 0,
+      "name": "Сережа",
+      "picture": "https://randomuser.me/api/portraits/thumb/lego/9.jpg",
+      "balance": 2589.5,
       "debtors": {
         "1": 0,
         "2": 0,
-        "3": 0,
-        "4": 0
+        "3": 0
       },
       "id": 3
-    },
-    {
-      "name": "Семен",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/3.jpg",
-      "balance": 0,
-      "debtors": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0
-      },
-      "id": 4
-    },
-    {
-      "name": "Миша",
-      "picture": "https://randomuser.me/api/portraits/thumb/lego/4.jpg",
-      "balance": 0,
-      "debtors": {},
-      "id": 5
     }
   ],
   "groups": [
     {
-      "name": "Походная",
+      "name": "Блабла",
       "members": [
         {
           "id": 1,
           "debtors": {
             "1": 0,
-            "2": -34,
-            "3": 0,
-            "4": 0
+            "2": 0,
+            "3": -245
           },
-          "balance": 0
-        },
-        {
-          "id": 3,
-          "debtors": {
-            "1": 0,
-            "2": -34,
-            "3": 0,
-            "4": 0
-          },
-          "balance": -144
+          "balance": -245
         },
         {
           "id": 2,
           "debtors": {
             "1": 0,
             "2": 0,
-            "3": 0,
-            "4": 0
+            "3": -245
           },
-          "balance": 34
-        }
-      ],
-      "id": 1
-    },
-    {
-      "name": "Ежедневная",
-      "members": [
-        {
-          "id": 2,
-          "debtors": {
-            "1": 0,
-            "2": 0,
-            "3": -5
-          },
-          "balance": -5
+          "balance": -245
         },
         {
           "id": 3,
@@ -112,7 +63,31 @@
             "2": 0,
             "3": 0
           },
-          "balance": 5
+          "balance": 490
+        }
+      ],
+      "id": 1
+    },
+    {
+      "name": "Блаа",
+      "members": [
+        {
+          "id": 2,
+          "debtors": {
+            "1": 0,
+            "2": 0,
+            "3": -2099.5
+          },
+          "balance": -2099.5
+        },
+        {
+          "id": 3,
+          "debtors": {
+            "1": 0,
+            "2": 0,
+            "3": 0
+          },
+          "balance": 2099.5
         }
       ],
       "id": 2
@@ -120,181 +95,199 @@
   ],
   "payments": [
     {
-      "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 34,
+      "groupId": 1,
+      "description": "Анаан",
+      "sum": 490,
       "paidBy": {
-        "userId": 2,
-        "name": "Степан"
+        "userId": 3,
+        "name": "Сережа"
       },
       "paidTo": [
         {
-          "userId": 2,
-          "name": "Степан"
+          "userId": 1,
+          "name": "Маша"
         },
         {
-          "userId": 3,
-          "name": "Людмила"
+          "userId": 2,
+          "name": "Вася"
         }
       ],
       "transactions": [
         {
+          "userId": 1,
+          "sum": -245
+        },
+        {
           "userId": 2,
-          "sum": 17
+          "sum": -245
         },
         {
           "userId": 3,
-          "sum": -17
+          "sum": 490
         }
       ],
       "id": 1
     },
     {
-      "groupId": 1,
-      "description": "Новая платежка",
-      "sum": 99,
+      "groupId": 2,
+      "description": "Апапп",
+      "sum": 300,
       "paidBy": {
         "userId": 2,
-        "name": "Степан"
+        "name": "Вася"
       },
       "paidTo": [
         {
-          "userId": 2,
-          "name": "Степан"
-        },
-        {
-          "userId": 1,
-          "name": "Петр"
-        },
-        {
           "userId": 3,
-          "name": "Людмила"
+          "name": "Сережа"
+        },
+        {
+          "userId": 2,
+          "name": "Вася"
         }
       ],
       "transactions": [
         {
-          "userId": 2,
-          "sum": 66
-        },
-        {
-          "userId": 1,
-          "sum": -33
-        },
-        {
           "userId": 3,
-          "sum": -33
+          "sum": -150
+        },
+        {
+          "userId": 2,
+          "sum": 150
         }
       ],
       "id": 2
     },
     {
       "groupId": 2,
-      "description": "Новая платежка",
-      "sum": 44,
+      "description": "dsfasdf",
+      "sum": 868,
       "paidBy": {
         "userId": 3,
-        "name": "Людмила"
+        "name": "Сережа"
       },
       "paidTo": [
         {
           "userId": 2,
-          "name": "Степан"
+          "name": "Вася"
         },
         {
           "userId": 3,
-          "name": "Людмила"
+          "name": "Сережа"
         }
       ],
       "transactions": [
         {
           "userId": 2,
-          "sum": -22
+          "sum": -434
         },
         {
           "userId": 3,
-          "sum": 22
+          "sum": 434
         }
       ],
       "id": 3
     },
     {
-      "groupId": 1,
-      "description": "Тест",
-      "sum": 110,
+      "groupId": 2,
+      "description": "dsafdsfa",
+      "sum": 323,
       "paidBy": {
         "userId": 3,
-        "name": "Людмила"
+        "name": "Сережа"
       },
       "paidTo": [
         {
           "userId": 2,
-          "name": "Степан"
-        },
-        {
-          "userId": 1,
-          "name": "Петр"
+          "name": "Вася"
         },
         {
           "userId": 3,
-          "name": "Людмила"
+          "name": "Сережа"
         }
       ],
       "transactions": [
         {
           "userId": 2,
-          "sum": -32
-        },
-        {
-          "userId": 1,
-          "sum": -65
+          "sum": -161.5
         },
         {
           "userId": 3,
-          "sum": -13
-        },
-        {
-          "id": 3,
-          "sum": 110
+          "sum": 161.5
         }
       ],
       "id": 4
     },
     {
-      "groupId": 0,
-      "description": "Списан долг",
-      "sum": 69,
+      "groupId": 2,
+      "description": "dasd",
+      "sum": 3232,
       "paidBy": {
-        "userId": 1,
-        "name": "Петр"
+        "userId": 3,
+        "name": "Сережа"
       },
       "paidTo": [
         {
+          "userId": 2,
+          "name": "Вася"
+        },
+        {
           "userId": 3,
-          "name": "Людмила"
+          "name": "Сережа"
         }
       ],
       "transactions": [
         {
-          "userId": 1,
-          "sum": 69
+          "userId": 2,
+          "sum": -1616
         },
         {
           "userId": 3,
-          "sum": -69
+          "sum": 1616
         }
       ],
       "id": 5
+    },
+    {
+      "groupId": 2,
+      "description": "dsds",
+      "sum": 76,
+      "paidBy": {
+        "userId": 3,
+        "name": "Сережа"
+      },
+      "paidTo": [
+        {
+          "userId": 3,
+          "name": "Сережа"
+        },
+        {
+          "userId": 2,
+          "name": "Вася"
+        }
+      ],
+      "transactions": [
+        {
+          "userId": 3,
+          "sum": 38
+        },
+        {
+          "userId": 2,
+          "sum": -38
+        }
+      ],
+      "id": 6
     }
   ],
   "connections": [
     {
       "groupId": 1,
-      "userId": 2,
+      "userId": 1,
       "id": 1
     },
     {
       "groupId": 1,
-      "userId": 1,
+      "userId": 2,
       "id": 2
     },
     {
