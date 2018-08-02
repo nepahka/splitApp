@@ -29,7 +29,7 @@ export default {
     members () {
       console.log('USERS CARD')
       if (this.$route.params.id) {
-        return this.$store.getters.getGroupById(+this.$route.params.id)[0].members
+        return this.$store.getters.getGroupById(this.$route.params.id)[0].members
       } else {
         return this.$store.getters.getUsers
       }

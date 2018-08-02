@@ -7,7 +7,6 @@ import UsersForm from '@/components/forms/UsersForm'
 import GroupsForm from '@/components/forms/GroupsForm'
 import PaymentForm from '@/components/forms/PaymentForm'
 import PaymentFormUsers from '@/components/forms/paymentForm/PaymentFormUsers'
-import PaymentFormPieSum from '@/components/forms/paymentForm/PaymentFormPieSum'
 
 Vue.use(Router)
 
@@ -33,11 +32,6 @@ export default new Router({
                   path: 'paidby',
                   name: 'PaymentFormUsers',
                   component: PaymentFormUsers
-                },
-                {
-                  path: 'piesum',
-                  name: 'PaymentFormPieSum',
-                  component: PaymentFormPieSum
                 }
               ]
             }

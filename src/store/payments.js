@@ -12,62 +12,41 @@ class Payment {
 export default {
   state: {
     payments: [],
-    paidBy: '',
-    paidPies: []
+    paidBy: ''
   },
   mutations: {
     updatePaidBy (state, paidBy) {
       state.paidBy = paidBy
     },
-    updatePaidPies (state, {userId, sum}) {
-      if (state.paidPies.find(u => u.userId === userId)) {
-        state.paidPies.find(u => u.userId === userId).sum = sum
-      } else {
-        state.paidPies.push({userId: userId, sum: sum})
-      }
-      console.log('state.paidPies', state.paidPies)
-    },
-    removePaidPie (state, userId) {
-      state.paidPies.splice(state.paidPies.findIndex(u => u.userId === userId), 1)
-      console.log('state.paidPies', state.paidPies)
-    },
-    updatePayments (state, payments) {
+    fetchPayments (state, payments) {
+      console.log('Mutation fetchPayments', payments)
       state.payments = payments
     },
-    addPayment (state, payment) {
-      state.payments.push(payment)
+    createPayment (state, payment) {
+      console.log('Mutation createPayment', payment)
+      state.payments.push({...payment})
     }
   },
   actions: {
-    async fetchPayments ({commit}, payload) {
-      const response = await fetch('http://localhost:3000/payments')
-      const payments = await response.json()
-      console.log('fetchPayments', payments)
-      commit('updatePayments', payments)
+    async fetchPayments ({commit, rootState}, payload) {
+      const response = rootState.db.collection('payments')
+      const payments = await response.get()
+      console.log('async fetchPayments', payments)
+      let result = []
+      payments.forEach(payment => result.push({id: payment.id, ...payment.data()}))
+      commit('fetchPayments', result)
     },
-    async createPayment ({commit}, {groupId, description, sum, paidBy, paidTo, transactions}) {
-      const newGroup = new Payment(groupId, description, sum, paidBy, paidTo, transactions)
-      console.log(newGroup)
-      const response = await fetch('http://localhost:3000/payments',
-        {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newGroup)
-        })
-      const payment = await response.json()
-      console.log('createPayment', payment)
-      commit('addPayment', payment)
+    async createPayment ({commit, rootState}, {groupId, description, sum, paidBy, paidTo, transactions}) {
+      const newPayment = new Payment(groupId, description, sum, paidBy, paidTo, transactions)
+      const response = rootState.db.collection('payments').add({...newPayment})
+      const payment = await response
+      console.log('async createPayment', payment)
+      commit('createPayment', {id: payment.id, ...newPayment})
     }
   },
   getters: {
     getPayments (state) {
       return state.payments
-    },
-    getPaidPies (state) {
-      return state.paidPies
     },
     getPaymentByGroupId: (state, getters) => (id) => {
       console.log('Вызов getPaymentByGroupId', id)

@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     users () {
-      return this.$store.getters.getMembersByGroupId(+this.$route.params['id'])
+      return this.$store.getters.getMembersByGroupId(this.$route.params['id'])
     }
   },
   methods: {

@@ -45,7 +45,7 @@ export default {
       console.log('DEBTORS CARD')
       if (this.$route.params.id) {
         this.isGroup = true
-        return this.$store.getters.getDebtorsByGroupId(+this.$route.params.id)
+        return this.$store.getters.getDebtorsByGroupId(this.$route.params.id)
       } else {
         this.isGroup = false
         return this.$store.getters.getDebtors
@@ -62,6 +62,7 @@ export default {
       this.debtUser = null
     },
     settleDebt ({sum, who, whom}) {
+      debugger
       this.confirmModal = false
       let whoUser = this.$store.getters.getUsers.find(u => u.id === who.id)
       let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
@@ -82,9 +83,11 @@ export default {
         debtors: whomUser.debtors
       })
       this.$store.getters.getGroups.map(group => {
+        debugger
         let updatedMembers = []
         let whoGroupBalance = 0
         group.members.map(member => {
+          debugger
           if (member.id === who.id) {
             whoGroupBalance = member.balance
             member.balance = 0
@@ -153,7 +156,7 @@ export default {
       })
       let updatedMembers = []
       let whoGroupBalance = 0
-      this.$store.getters.getGroupById(+this.$route.params.id)[0].members.map(member => {
+      this.$store.getters.getGroupById(this.$route.params.id)[0].members.map(member => {
         if (member.id === who.id) {
           whoGroupBalance = member.balance
           member.balance = 0
@@ -169,11 +172,11 @@ export default {
         })
       })
       this.$store.dispatch('updateGroup', {
-        id: +this.$route.params.id,
+        id: this.$route.params.id,
         members: updatedMembers
       })
       this.$store.dispatch('createPayment', {
-        groupId: +this.$route.params.id,
+        groupId: this.$route.params.id,
         description: 'Списан долг',
         sum: -1 * sum,
         paidBy: {

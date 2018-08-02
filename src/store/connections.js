@@ -10,34 +10,30 @@ export default {
     connections: []
   },
   mutations: {
-    updateConnections (state, connections) {
+    fetchConnections (state, connections) {
+      console.log('Mutation fetchConnections', connections)
       state.connections = connections
     },
-    addConnection (state, connection) {
-      state.connections.push(connection)
+    createConnection (state, connection) {
+      console.log('Mutation createConnection', connection)
+      state.connections.push({...connection})
     }
   },
   actions: {
-    async fetchConnections ({commit}, payload) {
-      const response = await fetch('http://localhost:3000/connections')
-      const connections = await response.json()
-      console.log('fetchComnnections', connections)
-      commit('updateConnections', connections)
+    async fetchConnections ({commit, rootState}, payload) {
+      const response = await rootState.db.collection('connections')
+      const connections = await response.get()
+      console.log('fetchConnections', connections)
+      let result = []
+      connections.forEach(connection => result.push({id: connection.id, ...connection.data()}))
+      commit('fetchConnections', result)
     },
-    async createConnection ({commit}, {groupId, userId}) {
+    async createConnection ({commit, rootState}, {groupId, userId}) {
       const newConnection = new Connection(groupId, userId)
-      console.log(newConnection)
-      const response = await fetch('http://localhost:3000/connections',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newConnection)
-        })
-      const connection = await response.json()
-
-      commit('addConnection', connection)
+      const response = rootState.db.collection('connections').add({...newConnection})
+      const connection = await response
+      console.log('async createConnection', connection.id)
+      commit('createConnection', {id: connection.id, ...newConnection})
     }
   },
   getters: {

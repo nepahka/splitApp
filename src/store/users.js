@@ -13,54 +13,43 @@ export default {
     users: []
   },
   mutations: {
-    updateUsers (state, users) {
+    fetchUsers (state, users) {
+      console.log('Mutation fetchUsers', users)
       state.users = users
     },
-    addUser (state, user) {
-      state.users.push(user)
+    createUser (state, user) {
+      console.log('Mutation createUser', user)
+      state.users.push({...user})
     },
-    updateUser (state, user) {
-      console.log('Mutation updateUser', user)
-      let current = state.users.find(u => u.id === user.id)
-      current = user
+    updateUser (state, {id, balance, debtors}) {
+      console.log('Mutation updateUser')
+      let current = state.users.find(u => u.id === id)
+      current.balance = balance
+      current.debtors = debtors
     }
   },
   actions: {
-    async fetchUsers ({commit}, payload) {
-      const response = await fetch('http://localhost:3000/users')
-      const users = await response.json()
+    async fetchUsers ({commit, rootState}, payload) {
+      const response = rootState.db.collection('users')
+      const users = await response.get()
       console.log('async fetchUsers', users)
-      commit('updateUsers', users)
+      let result = []
+      users.forEach(user => result.push({id: user.id, ...user.data()}))
+      commit('fetchUsers', result)
     },
-    async createUser ({commit}, {name, picture}) {
+    async createUser ({commit, rootState}, {name, picture}) {
       const newUser = new User(name, picture)
-      const response = await fetch('http://localhost:3000/users',
-        {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newUser)
-        })
-      const user = await response.json()
-      console.log('async addUser', user)
-      commit('addUser', user)
+      const response = rootState.db.collection('users').add({...newUser})
+      let user = await response
+      console.log('async createUser', user)
+      commit('createUser', {id: user.id, ...newUser})
     },
-    async updateUser ({commit}, {id, balance, debtors}) {
-      console.log('Actions updateUser')
-      const response = await fetch('http://localhost:3000/users/' + id,
-        {
-          method: 'PATCH',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({balance: balance, debtors: debtors})
-        })
-      const updatedUser = await response.json()
+    async updateUser ({commit, rootState}, {id, balance, debtors}) {
+      console.log('Actions updateUser', {id, balance, debtors})
+      const response = rootState.db.collection('users').doc(id).update({balance: balance, debtors: debtors})
+      const updatedUser = await response
       console.log('async updateUser', updatedUser)
-      commit('updateUser', updatedUser)
+      commit('updateUser', {id, balance, debtors})
     }
   },
   getters: {
@@ -81,9 +70,9 @@ export default {
                 picture: item.picture
               },
               whom: {
-                id: +userId,
-                name: debtors.filter(u => u.id === +userId)[0].name,
-                picture: debtors.filter(u => u.id === +userId)[0].picture
+                id: userId,
+                name: debtors.filter(u => u.id === userId)[0].name,
+                picture: debtors.filter(u => u.id === userId)[0].picture
               },
               sum: item.debtors[userId]
             })

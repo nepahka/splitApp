@@ -63,11 +63,13 @@ export default {
   computed: {
     users () {
       return this.$store.getters.getUsers
+    },
+    groups () {
+      return this.$store.getters.getGroups
     }
   },
   methods: {
-    addGroup () {
-      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
+    async addGroup () {
       let resultMembers = []
       this.members.map(uID => {
         resultMembers.push(
@@ -77,18 +79,20 @@ export default {
             balance: 0
           })
       })
-      this.$store.dispatch('createGroup', {
+      await this.$store.dispatch('createGroup', {
         name: this.name,
         members: resultMembers
       })
-      // спорный момент
-      const id = this.$store.getters.getGroups.length + 1
+
+      const gID = this.groups[this.groups.length - 1].id
+
       this.members.map(uID => {
         this.$store.dispatch('createConnection', {
-          groupId: id,
+          groupId: gID,
           userId: uID
         })
       })
+      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
     },
     toggleCheckbox (user) {
       if (this.members.includes(user.id)) {

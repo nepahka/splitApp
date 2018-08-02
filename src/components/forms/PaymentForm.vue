@@ -98,7 +98,7 @@
           {{ user.name }}
         </label>
         <div class="right" v-show="isSelected(user.id) && !editSumVisible(user.id)">
-          {{ calcDebt(user) }}{{ '&nbsp;&nbsp;' }}
+          {{ paidPies[user.id] }}{{ '&nbsp;&nbsp;' }}
           <v-ons-icon v-show="!isEqually" icon="ion-ios-color-wand, material:md-color-wand" @click="editSum(user.id)"></v-ons-icon>
         </div>
         <div class="right" v-show="editSumVisible(user.id)">
@@ -137,21 +137,20 @@ export default {
       debtors: {},
       description: '',
       transactions: [],
+      globalUsers: [],
       groupUsers: [],
       editableSumId: '',
       pieSum: 0,
-      isEqually: true
+      isEqually: true,
+      paidPies: {}
+    }
+  },
+  watch: {
+    paidSum () {
+      this.recalcSumPieces()
     }
   },
   computed: {
-    paidPies: {
-      get () {
-        return this.$store.state.payments.paidPies
-      },
-      set (value) {
-        this.$store.state.payments.paidPies = value
-      }
-    },
     paidId: {
       get () {
         return this.$store.state.payments.paidBy
@@ -161,10 +160,10 @@ export default {
       }
     },
     paidBy () {
-      return this.users.find(u => u.id === +this.paidId)
+      return this.users.find(u => u.id === this.paidId)
     },
     users () {
-      return this.$store.getters.getMembersByGroupId(+this.$route.params['id'])
+      return this.$store.getters.getMembersByGroupId(this.$route.params['id'])
     },
     allUsers () {
       return this.$store.getters.getUsers
@@ -205,45 +204,41 @@ export default {
     },
     changeSum (user) {
       this.paidTo[this.paidTo.indexOf(user)].debt = this.pieSum
-      this.$store.commit('updatePaidPies', {
-        userId: user.id,
-        sum: this.pieSum
-      })
-      this.paidSum = this.paidPies.reduce((previousValue, currentItem) => {
-        return previousValue + currentItem.sum
-      }, 0)
+      this.paidPies[user.id] = this.pieSum
+      let resultSum = 0
+      for (let key in this.paidPies) {
+        resultSum += this.paidPies[key]
+      }
+      this.paidSum = resultSum
     },
     toggleCheckbox (user) {
       if (this.paidTo.includes(user)) {
         this.paidTo.splice(this.paidTo.findIndex(u => u === user), 1)
-        this.$store.commit('removePaidPie', user.id)
+        delete this.paidPies[user.id]
+        this.recalcSumPieces()
       } else {
         this.paidTo.push(user)
+        this.calcUserSumPiece(user.id)
       }
     },
-    calcDebt (user) {
-      if (this.paidTo.length) {
-        if (this.paidTo.includes(user)) {
-          let isExist = !!this.paidPies.find(u => u.userId === user.id)
-          if (this.isEqually) {
-            this.paidTo[this.paidTo.indexOf(user)].debt = (this.paidSum / this.paidTo.length)
-            this.$store.commit('updatePaidPies', {
-              userId: user.id,
-              sum: this.paidSum / this.paidTo.length
-            })
-          }
-          if (isExist) {
-            return Math.round10(this.paidPies.find(u => u.userId === user.id).sum, -2)
-          } else {
-            this.$store.commit('updatePaidPies', {
-              userId: user.id,
-              sum: 0
-            })
-            return 0
-          }
+    calcUserSumPiece (id) {
+      if (this.isEqually) {
+        let pie = this.paidSum / this.paidTo.length
+        this.paidTo.find(u => u.id === id).debt = pie
+//        this.paidTo[this.paidTo.indexOf(user)].debt = pie
+        this.paidPies[id] = pie
+        this.recalcSumPieces()
+      } else {
+        this.paidPies[id] = 0
+      }
+    },
+    recalcSumPieces () {
+      if (this.isEqually) {
+        for (let key in this.paidPies) {
+          this.paidPies[key] = this.paidSum / this.paidTo.length
+          this.paidTo.find(u => u.id === key).debt = this.paidSum / this.paidTo.length
         }
       }
-      return 0
     },
     isSelected (id) {
       return this.paidToIds.includes('' + id + '')
@@ -255,7 +250,7 @@ export default {
       this.createPayment()
       this.updateUsers()
       this.clean()
-      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
+      this.$router.push({name: this.$route.matched[this.$route.matched.length - 2].name})
     },
     clean () {
       this.paidPies = []
@@ -269,13 +264,14 @@ export default {
       }
       this.paidBy.balance = +(this.paidBy.balance + this.paidSum).toFixed(10)
 
-      this.paidTo.forEach(function (debtor) {
+      for (let key in this.paidPies) {
         self.transactions.push({
-          userId: debtor.id,
-          sum: -debtor.debt.toFixed(10)
+          userId: key,
+          sum: -self.paidPies[key].toFixed(10)
         })
+      }
+      this.paidTo.forEach(function (debtor) {
         debtor.balance = +(debtor.balance - debtor.debt).toFixed(10)
-        console.log('BALANCE', debtor.balance)
       })
       if (this.transactions.find(t => t.userId === paidByUserSum.userId) !== undefined) {
         this.transactions.find(t => t.userId === paidByUserSum.userId).sum += paidByUserSum.sum
@@ -304,6 +300,7 @@ export default {
       positiveBalance.forEach(function (item) {
         item.pseudoBalance = item.balance
       })
+
       negativeBalance.forEach(function (negativeItem) {
         let curBalance = negativeItem.pseudoBalance
         positiveBalance.forEach(function (positiveItem) {
@@ -333,10 +330,11 @@ export default {
           }
         })
       })
+      this.globalUsers = users
     },
     calculateGroupDebtors () {
       // делаем клон
-      this.groupUsers = JSON.parse(JSON.stringify(this.$store.getters.getRecalculateMembersByGroupId(+this.$route.params['id'])))
+      this.groupUsers = JSON.parse(JSON.stringify(this.$store.getters.getRecalculateMembersByGroupId(this.$route.params['id'])))
       const users2 = this.groupUsers
       // тест нового алгоритма
       users2.forEach(function (item) {
@@ -395,7 +393,7 @@ export default {
         }
       })
       await this.$store.dispatch('createPayment', {
-        groupId: +this.$route.params['id'],
+        groupId: this.$route.params['id'],
         description: this.description,
         sum: this.paidSum,
         paidBy: {
@@ -409,7 +407,7 @@ export default {
       this.updateGroup()
     },
     updateUsers () {
-      this.allUsers.forEach(user => {
+      this.globalUsers.forEach(user => {
         this.$store.dispatch('updateUser', {
           id: user.id,
           balance: user.balance,
@@ -429,7 +427,7 @@ export default {
         )
       })
       this.$store.dispatch('updateGroup', {
-        id: +this.$route.params['id'],
+        id: this.$route.params['id'],
         members: groupMembers
       })
     }
@@ -450,6 +448,7 @@ export default {
   label {
     margin-bottom: 0;
   }
+
   .list-item__right .text-input {
     text-align: right;
   }

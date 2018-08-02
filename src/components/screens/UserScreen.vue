@@ -28,13 +28,13 @@ export default {
   },
   computed: {
     payByMe () {
-      return this.$store.getters.getPaymentsFromByUserId(+this.$route.params.userId)
+      return this.$store.getters.getPaymentsFromByUserId(this.$route.params.userId)
     },
     payToMe () {
-      return this.$store.getters.getPaymentsToByUserId(+this.$route.params.userId)
+      return this.$store.getters.getPaymentsToByUserId(this.$route.params.userId)
     },
     name () {
-      return this.$store.getters.getNameByUserId(+this.$route.params.userId)
+      return this.$store.getters.getNameByUserId(this.$route.params.userId)
     }
   },
   methods: {
@@ -44,8 +44,8 @@ export default {
       return msg
     },
     paidToSum (payment) {
-      if (payment.transactions.find(u => u.userId === +this.$route.params.userId) !== undefined) {
-        return payment.transactions.find(u => u.userId === +this.$route.params.userId).sum
+      if (payment.transactions.find(u => u.userId === this.$route.params.userId) !== undefined) {
+        return payment.transactions.find(u => u.userId === this.$route.params.userId).sum
       }
       return 0
     }

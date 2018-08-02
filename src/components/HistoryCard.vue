@@ -34,7 +34,7 @@ export default {
   computed: {
     currentPayments () {
       if (this.$route.params.id) {
-        return this.$store.getters.getPaymentByGroupId(+this.$route.params.id)
+        return this.$store.getters.getPaymentByGroupId(this.$route.params.id)
       } else {
         return this.payments
       }

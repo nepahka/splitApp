@@ -20,7 +20,7 @@ export default {
   computed: {
     name () {
       if (this.$route.params.id) {
-        return this.$store.getters.getGroupById(+this.$route.params.id)[0].name
+        return this.$store.getters.getGroupById(this.$route.params.id)[0].name
       } else {
         return ''
       }
