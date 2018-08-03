@@ -68,18 +68,18 @@ export default {
 
 <style scoped>
   .list-title {
-    color: #1f1f21;
+    /*color: #1f1f21;*/
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
-    letter-spacing: 0;
-    font-weight: 400;
-    text-transform: none;
-    line-height: 30px;
-    padding: 0 6px 0 16px;
+    /*font-size: 20px;*/
+    /*letter-spacing: 0;*/
+    /*font-weight: 400;*/
+    /*text-transform: none;*/
+    /*line-height: 30px;*/
+    /*padding: 0 6px 0 16px;*/
   }
   .list-title .left {
-    padding: 4px 0;
+    /*padding: 4px 0;*/
   }
   .button--quiet {
     padding-top: 0 !important;

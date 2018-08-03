@@ -1,5 +1,5 @@
 <template>
-  <v-ons-list modifier="inset" class="debtors-card">
+  <v-ons-list class="debtors-card">
     <v-ons-list-item
       v-for="user in debtors"
       :key="user.id"
@@ -218,8 +218,8 @@ export default {
     color: darkslategrey;
   }
   img {
-    width: 32px;
-    border-radius: 50%;
+    width: 20px;
+    border-radius: 6px;
   }
   .debtors-card img {
     margin: 0 6px

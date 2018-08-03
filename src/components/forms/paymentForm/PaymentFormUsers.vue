@@ -58,8 +58,8 @@ export default {
 
 <style scoped>
   img {
-    width: 32px;
-    border-radius: 50%;
+    width: 20px;
+    border-radius: 6px;
   }
   label {
     margin-bottom: 0;

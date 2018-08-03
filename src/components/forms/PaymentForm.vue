@@ -12,7 +12,7 @@
       </div>
     </v-ons-toolbar>
     <br>
-    <v-ons-list-title>Описание</v-ons-list-title>
+    <!--<v-ons-list-title>Описание</v-ons-list-title>-->
     <v-ons-list>
       <v-ons-list-item>
         <div class="center">
@@ -26,11 +26,11 @@
       </v-ons-list-item>
     </v-ons-list>
     <br>
-    <v-ons-list-title>Кто</v-ons-list-title>
+    <!--<v-ons-list-title>Кто</v-ons-list-title>-->
     <v-ons-list>
       <v-ons-list-item v-if="!paidId" @click="$router.push({name: 'PaymentFormUsers'})">
-        <div class="center list-item__center" style="height: 55px; color: #999;">
-          Выберите
+        <div class="center list-item__left" style="color: #999;">
+          Кто платит
         </div>
         <div class="right list-item__right">
           <v-ons-icon icon="ion-ios-arrow-forward, material:md-forward"></v-ons-icon>
@@ -49,7 +49,7 @@
       </v-ons-list-item>
     </v-ons-list>
     <br>
-    <v-ons-list-title>Сумма</v-ons-list-title>
+    <!--<v-ons-list-title>Сумма</v-ons-list-title>-->
     <v-ons-list>
       <v-ons-list-item>
         <div class="center">
@@ -64,13 +64,13 @@
       </v-ons-list-item>
     </v-ons-list>
     <br>
-    <v-ons-list-title>За кого</v-ons-list-title>
+    <!--<v-ons-list-title>За кого</v-ons-list-title>-->
     <v-ons-list>
       <ons-list-item>
         <label class="center" for="switch1">
-          Равные части
+          Делить поровну
         </label>
-        <div class="right">
+        <div class="right switch-item">
           <v-ons-switch
             input-id="switch1"
             v-model="isEqually"
@@ -458,8 +458,8 @@ export default {
   }
 
   img {
-    width: 32px;
-    border-radius: 50%;
+    width: 20px;
+    border-radius: 6px;
   }
 
   label {
@@ -471,9 +471,15 @@ export default {
   }
 </style>
 
-<style>
+<style scoped>
   .list-item__right .text-input {
     text-align: right;
     width: 80px;
+  }
+  .list-item__center {
+    padding: 0;
+  }
+  .switch-item {
+    padding: 0 12px 0 0;
   }
 </style>

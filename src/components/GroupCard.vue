@@ -1,5 +1,5 @@
 <template>
-  <v-ons-list modifier="inset">
+  <v-ons-list>
     <v-ons-list-item>
       <div class="left">
       </div>

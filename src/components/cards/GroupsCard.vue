@@ -1,5 +1,5 @@
 <template>
-  <v-ons-list modifier="inset">
+  <v-ons-list>
     <v-ons-list-item
       v-for="group in groups"
       :key="group.id"
@@ -46,8 +46,8 @@ export default {
 
 <style scoped>
   img {
-    width: 32px;
-    border-radius: 50%;
+    width: 20px;
+    border-radius: 6px;
   }
 
   img ~ img {

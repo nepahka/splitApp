@@ -7,7 +7,7 @@
     <v-ons-list-title>
       <div class="left">Группы</div>
       <div class="right">
-        <v-ons-button modifier="quiet" @click="$router.push({name: 'GroupsForm'})">Добавить</v-ons-button>
+        <v-ons-icon @click="$router.push({name: 'GroupsForm'})" icon="ion-ios-add, material:md-add"></v-ons-icon>
       </div>
     </v-ons-list-title>
     <groups-card
@@ -17,7 +17,7 @@
     <v-ons-list-title>
       <div class="left">Пользователи</div>
       <div class="right">
-        <v-ons-button modifier="quiet" @click="$router.push({name: 'UsersForm'})">Добавить</v-ons-button>
+        <v-ons-icon @click="$router.push({name: 'UsersForm'})" icon="ion-ios-add, material:md-add"></v-ons-icon>
       </div>
     </v-ons-list-title>
     <users-card
@@ -69,21 +69,26 @@ export default {
 
 <style scoped>
   .list-title {
-    color: #1f1f21;
+    /*color: #1f1f21;*/
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
-    letter-spacing: 0;
-    font-weight: 400;
-    text-transform: none;
-    line-height: 30px;
-    padding: 0 6px 0 16px;
+    /*font-size: 20px;*/
+    /*letter-spacing: 0;*/
+    /*font-weight: 400;*/
+    /*text-transform: none;*/
+    /*line-height: 30px;*/
+    /*padding: 0 6px 0 16px;*/
   }
   .list-title .left {
-    padding: 4px 0;
+    /*padding: 4px 0;*/
   }
   .button--quiet {
     padding-top: 0;
     padding-bottom: 0;
+  }
+  .ion-ios-add {
+    font-size: 20px;
+    color: #0076ff;
+    padding: 0 12px;
   }
 </style>

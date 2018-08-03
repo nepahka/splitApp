@@ -101,4 +101,10 @@ export default {
     justify-content: space-between;
     margin-bottom: 24px;
   }
+  .back-button__label {
+    font-weight: 400;
+  }
+  .list-item:only-child {
+    margin: 0;
+  }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-ons-list modifier="inset">
+  <v-ons-list>
     <v-ons-list-item
       tappable
       v-for="user in members"
@@ -51,7 +51,7 @@ export default {
 
 <style scoped>
   img {
-    width: 32px;
-    border-radius: 50%;
+    width: 20px;
+    border-radius: 6px;
   }
 </style>
