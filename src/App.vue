@@ -2,6 +2,7 @@
   <div id="app">
     <v-ons-navigator
       swipeable
+      v-if="loading"
       :page-stack="pageStack"
       :pop-page="goBack"
     ></v-ons-navigator>
