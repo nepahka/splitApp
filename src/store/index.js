@@ -4,7 +4,7 @@ import users from './users'
 import groups from './groups'
 import payments from './payments'
 import connections from './connections'
-import Firebase from 'Firebase'
+import Firebase from 'Firebase/app'
 import 'Firebase/firestore'
 
 Firebase.initializeApp({
