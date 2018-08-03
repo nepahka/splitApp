@@ -62,7 +62,6 @@ export default {
       this.debtUser = null
     },
     settleDebt ({sum, who, whom}) {
-      debugger
       this.confirmModal = false
       let whoUser = this.$store.getters.getUsers.find(u => u.id === who.id)
       let whomUser = this.$store.getters.getUsers.find(u => u.id === whom.id)
@@ -83,11 +82,9 @@ export default {
         debtors: whomUser.debtors
       })
       this.$store.getters.getGroups.map(group => {
-        debugger
         let updatedMembers = []
         let whoGroupBalance = 0
         group.members.map(member => {
-          debugger
           if (member.id === who.id) {
             whoGroupBalance = member.balance
             member.balance = 0

@@ -87,7 +87,7 @@
             :input-id="'paidto-' + index"
             :value="user.id"
             v-model="paidToIds"
-            @change="toggleCheckbox(user)"
+            @change="toggleCheckbox(user.id)"
           >
           </v-ons-checkbox>
         </label>
@@ -142,7 +142,9 @@ export default {
       editableSumId: '',
       pieSum: 0,
       isEqually: true,
-      paidPies: {}
+      paidPies: {},
+      updateBalances: {},
+      currentPayUsersBalances: {}
     }
   },
   watch: {
@@ -192,6 +194,18 @@ export default {
     this.allSelected = false
   },
   methods: {
+    calcCurrentPayUsersBalances () {
+      let self = this
+      let users = []
+      for (let key in this.paidPies) {
+        users.push(self.users.find(u => u.id === key))
+      }
+      let result = users.reduce((prev, cur) => {
+        prev[cur.id] = cur.balance
+        return prev
+      }, {})
+      return result
+    },
     editSumVisible (id) {
       return id === this.editableSumId
     },
@@ -203,7 +217,6 @@ export default {
       })
     },
     changeSum (user) {
-      this.paidTo[this.paidTo.indexOf(user)].debt = this.pieSum
       this.paidPies[user.id] = this.pieSum
       let resultSum = 0
       for (let key in this.paidPies) {
@@ -211,22 +224,18 @@ export default {
       }
       this.paidSum = resultSum
     },
-    toggleCheckbox (user) {
-      if (this.paidTo.includes(user)) {
-        this.paidTo.splice(this.paidTo.findIndex(u => u === user), 1)
-        delete this.paidPies[user.id]
+    toggleCheckbox (id) {
+      let isExist = !!this.paidPies[id]
+      if (isExist) {
+        delete this.paidPies[id]
         this.recalcSumPieces()
       } else {
-        this.paidTo.push(user)
-        this.calcUserSumPiece(user.id)
+        this.calcUserSumPiece(id)
       }
     },
     calcUserSumPiece (id) {
       if (this.isEqually) {
-        let pie = this.paidSum / this.paidTo.length
-        this.paidTo.find(u => u.id === id).debt = pie
-//        this.paidTo[this.paidTo.indexOf(user)].debt = pie
-        this.paidPies[id] = pie
+        this.paidPies[id] = this.paidSum / Object.keys(this.paidPies).length
         this.recalcSumPieces()
       } else {
         this.paidPies[id] = 0
@@ -235,8 +244,7 @@ export default {
     recalcSumPieces () {
       if (this.isEqually) {
         for (let key in this.paidPies) {
-          this.paidPies[key] = this.paidSum / this.paidTo.length
-          this.paidTo.find(u => u.id === key).debt = this.paidSum / this.paidTo.length
+          this.paidPies[key] = this.paidSum / Object.keys(this.paidPies).length
         }
       }
     },
@@ -258,21 +266,21 @@ export default {
     },
     calculateBalance () {
       let self = this
+      this.currentPayUsersBalances = this.calcCurrentPayUsersBalances()
+
       const paidByUserSum = {
         userId: this.paidBy.id,
         sum: +this.paidSum.toFixed(10)
       }
-      this.paidBy.balance = +(this.paidBy.balance + this.paidSum).toFixed(10)
+      this.paidBy.balance = +(this.paidBy.balance + this.paidSum - this.paidPies[this.paidBy.id]).toFixed(10)
 
       for (let key in this.paidPies) {
         self.transactions.push({
           userId: key,
           sum: -self.paidPies[key].toFixed(10)
         })
+        self.updateBalances[key] = +(self.currentPayUsersBalances[key] - self.paidPies[key]).toFixed(10)
       }
-      this.paidTo.forEach(function (debtor) {
-        debtor.balance = +(debtor.balance - debtor.debt).toFixed(10)
-      })
       if (this.transactions.find(t => t.userId === paidByUserSum.userId) !== undefined) {
         this.transactions.find(t => t.userId === paidByUserSum.userId).sum += paidByUserSum.sum
       } else {
@@ -280,15 +288,23 @@ export default {
       }
     },
     calculateDebtors () {
+      let self = this
       let users = this.allUsers
+      const cloneUsers = JSON.parse(JSON.stringify(users))
+
       // тест нового алгоритма
-      users.forEach(function (item) {
-        users.forEach(function (debtor) {
+      cloneUsers.forEach(function (item) {
+        let isExist = !!self.updateBalances[item.id]
+        if (isExist) {
+          item.balance = self.updateBalances[item.id]
+        }
+        cloneUsers.forEach(function (debtor) {
           item.debtors[debtor.id] = 0
         })
       })
+      cloneUsers.find(u => u.id === self.paidBy.id).balance = self.paidBy.balance
 
-      let sortArray = users.sort(r => r.balance)
+      let sortArray = cloneUsers.sort(r => r.balance)
       let negativeBalance = sortArray.filter(a => a.balance < 0)
       let positiveBalance = sortArray.filter(a => a.balance >= 0)
       let resultArray = []
@@ -324,13 +340,14 @@ export default {
         resultArray.push(item)
       })
       resultArray.forEach(function (resultItem) {
-        users.forEach(function (trueItem) {
+        cloneUsers.forEach(function (trueItem) {
           if (resultItem.id === trueItem.id) {
             trueItem.debtors = resultItem.debtors
           }
         })
       })
-      this.globalUsers = users
+      this.globalUsers = cloneUsers
+      console.log(this.globalUsers)
     },
     calculateGroupDebtors () {
       // делаем клон
