@@ -465,21 +465,23 @@ export default {
   label {
     margin-bottom: 0;
   }
-
   .list-item__right .text-input {
-    text-align: right;
-  }
-</style>
-
-<style scoped>
-  .list-item__right .text-input {
-    text-align: right;
-    width: 80px;
+    text-align: right !important;
   }
   .list-item__center {
     padding: 0;
   }
+  .list-item__right {
+    padding: 0 12px 0 0;
+  }
   .switch-item {
     padding: 0 12px 0 0;
+  }
+</style>
+
+<style>
+  .list-item__right .text-input {
+    text-align: right;
+    width: 80px;
   }
 </style>
