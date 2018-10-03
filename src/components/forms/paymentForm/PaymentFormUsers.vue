@@ -1,42 +1,26 @@
 <template>
-  <v-ons-page>
-    <v-ons-toolbar>
-      <div class="left">
-        <ons-back-button>Назад</ons-back-button>
-      </div>
-      <div class="center">Кто платит</div>
-    </v-ons-toolbar>
+  <f7-page>
+    <f7-navbar back-link="Back" title="Кто платит"></f7-navbar>
 
-    <v-ons-list>
-      <v-ons-list-item
+    <f7-list>
+      <f7-list-item
+        radio
         v-for="(user, index) in users"
         :key="user.id"
-        tappable
+        :title="user.name"
+        :value="user.name"
+        :checked="paidBy === user.id"
+        @change="commitPaidByToStore(user.id)"
       >
-        <label class="left">
-          <v-ons-radio
-            :input-id="'radio-' + index"
-            :value="user.id"
-            v-model=" paidBy"
-            @change="commitPaidByToStore(user.id)"
-          >
-          </v-ons-radio>
-        </label>
-        <label :for="'radio-' + index" class="left">
-          <img :src="user.picture">
-        </label>
-        <label :for="'radio-' + index" class="center">
-          {{ user.name }}
-        </label>
-      </v-ons-list-item>
-    </v-ons-list>
-  </v-ons-page>
+        <img slot="media" :src="user.picture">
+      </f7-list-item>
+    </f7-list>
+  </f7-page>
 </template>
 
 <script>
 export default {
-  props: {
-  },
+  props: {},
   data () {
     return {
       paidBy: this.$store.state.payments.paidBy
@@ -44,13 +28,13 @@ export default {
   },
   computed: {
     users () {
-      return this.$store.getters.getMembersByGroupId(this.$route.params['id'])
+      return this.$store.getters.getMembersByGroupId(this.$f7router.currentRoute.params['id'])
     }
   },
   methods: {
     commitPaidByToStore (id) {
-      this.$router.go(-1)
       this.$store.commit('updatePaidBy', '' + id + '')
+      this.$f7.views.main.router.back()
     }
   }
 }
@@ -61,6 +45,7 @@ export default {
     width: 20px;
     border-radius: 6px;
   }
+
   label {
     margin-bottom: 0;
   }

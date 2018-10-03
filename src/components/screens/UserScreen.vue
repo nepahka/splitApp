@@ -6,13 +6,10 @@
       </div>
       <div class="center">{{ name }}</div>
     </v-ons-toolbar>
-    <br>
-    <v-ons-list-title>Я платил</v-ons-list-title>
+    <f7-block-title>Я платил</f7-block-title>
     <history-card :payments="payByMe"/>
-    <br>
-    <v-ons-list-title>За меня платили</v-ons-list-title>
+    <f7-block-title>За меня платили</f7-block-title>
     <history-card :payments="payToMe"/>
-    <br>
   </v-ons-page>
 </template>
 
@@ -28,13 +25,13 @@ export default {
   },
   computed: {
     payByMe () {
-      return this.$store.getters.getPaymentsFromByUserId(this.$route.params.userId)
+      return this.$store.getters.getPaymentsFromByUserId(this.$f7router.currentRoute.params.userId)
     },
     payToMe () {
-      return this.$store.getters.getPaymentsToByUserId(this.$route.params.userId)
+      return this.$store.getters.getPaymentsToByUserId(this.$f7router.currentRoute.params.userId)
     },
     name () {
-      return this.$store.getters.getNameByUserId(this.$route.params.userId)
+      return this.$store.getters.getNameByUserId(this.$f7router.currentRoute.params.userId)
     }
   },
   methods: {
@@ -44,8 +41,8 @@ export default {
       return msg
     },
     paidToSum (payment) {
-      if (payment.transactions.find(u => u.userId === this.$route.params.userId) !== undefined) {
-        return payment.transactions.find(u => u.userId === this.$route.params.userId).sum
+      if (payment.transactions.find(u => u.userId === this.$f7router.currentRoute.params.userId) !== undefined) {
+        return payment.transactions.find(u => u.userId === this.$f7router.currentRoute.params.userId).sum
       }
       return 0
     }

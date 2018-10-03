@@ -1,34 +1,23 @@
 <template>
-  <v-ons-page>
-    <v-ons-toolbar>
-      <div class="left">
-        <ons-back-button>Назад</ons-back-button>
-      </div>
-      <div class="center">
-        {{ name }}
-      </div>
-      <div class="right">
-        <v-ons-toolbar-button @click="$router.push({name: 'PaymentForm'})">
-          Платеж
-        </v-ons-toolbar-button>
-      </div>
-    </v-ons-toolbar>
-    <br>
-    <v-ons-list-title>
-      <div class="left">Члены</div>
-    </v-ons-list-title>
+  <f7-page>
+    <f7-navbar back-link="Back" :title="name">
+      <f7-nav-right>
+        <f7-link @click="addPayment">Добавить</f7-link>
+      </f7-nav-right>
+    </f7-navbar>
+    <f7-block-title>
+      Члены
+    </f7-block-title>
     <users-card/>
-    <br>
-    <v-ons-list-title>
-      <div class="left">Должники</div>
-    </v-ons-list-title>
+    <f7-block-title>
+      Должники
+    </f7-block-title>
     <debtors-card/>
-    <br>
-    <v-ons-list-title>
-      <div class="left">История платежей</div>
-    </v-ons-list-title>
+    <f7-block-title>
+      История платежей
+    </f7-block-title>
     <history-card/>
-  </v-ons-page>
+  </f7-page>
 </template>
 
 <script>
@@ -45,22 +34,21 @@ export default {
   props: {},
   data () {
     return {
-      isPaymentFormVisible: false,
       owesUsers: []
     }
   },
   computed: {
     name () {
-      if (this.$route.params.id) {
-        return this.$store.getters.getGroupById(this.$route.params.id)[0].name
+      if (this.$f7router.currentRoute.params.id) {
+        return this.$store.getters.getGroupById(this.$f7router.currentRoute.params.id)[0].name
       } else {
         return ''
       }
     }
   },
   methods: {
-    addHistory () {
-      this.isPaymentFormVisible = false
+    addPayment () {
+      this.$f7.views.main.router.navigate({url: '/groups/' + this.$f7router.currentRoute.params.id + '/addpayment'})
     }
   }
 }

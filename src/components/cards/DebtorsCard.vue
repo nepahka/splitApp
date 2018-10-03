@@ -1,6 +1,6 @@
 <template>
-  <v-ons-list class="debtors-card">
-    <v-ons-list-item
+  <f7-list class="debtors-card">
+    <f7-list-item
       v-for="user in debtors"
       :key="user.id"
     >
@@ -13,15 +13,14 @@
         <span class="sum">: {{ -Math.round10(user.sum, -2) }}</span>
       </div>
       <div class="right">
-        <v-ons-icon
-          icon="ion-ios-arrow-dropup, material:md-arrow-dropup"
-          size="18px, material: 18px"
+        <f7-icon
+          ios="ion:ios-arrow-dropup" md="material:md-arrow-dropup"
           @click="confirmSettleDebt(user)"
-        ></v-ons-icon>
+        ></f7-icon>
       </div>
       <confirm-modal v-if="confirmModal" :user="debtUser" @onCancel="cancelSettleDebt" @onConfirm="isGroup ? settleGroupDebt(debtUser) : settleDebt(debtUser)"></confirm-modal>
-    </v-ons-list-item>
-  </v-ons-list>
+    </f7-list-item>
+  </f7-list>
 </template>
 
 <script>
@@ -43,9 +42,10 @@ export default {
   computed: {
     debtors () {
       console.log('DEBTORS CARD')
-      if (this.$route.params.id) {
+      let isExist = Object.keys(this.$f7router.currentRoute).length === 0 || Object.keys(this.$f7router.currentRoute.params).length === 0
+      if (!isExist) {
         this.isGroup = true
-        return this.$store.getters.getDebtorsByGroupId(this.$route.params.id)
+        return this.$store.getters.getDebtorsByGroupId(this.$f7router.currentRoute.params.id)
       } else {
         this.isGroup = false
         return this.$store.getters.getDebtors
@@ -153,7 +153,7 @@ export default {
       })
       let updatedMembers = []
       let whoGroupBalance = 0
-      this.$store.getters.getGroupById(this.$route.params.id)[0].members.map(member => {
+      this.$store.getters.getGroupById(this.$f7router.currentRoute.params.id)[0].members.map(member => {
         if (member.id === who.id) {
           whoGroupBalance = member.balance
           member.balance = 0
@@ -169,11 +169,11 @@ export default {
         })
       })
       this.$store.dispatch('updateGroup', {
-        id: this.$route.params.id,
+        id: this.$f7router.currentRoute.params.id,
         members: updatedMembers
       })
       this.$store.dispatch('createPayment', {
-        groupId: this.$route.params.id,
+        groupId: this.$f7router.currentRoute.params.id,
         description: 'Списан долг',
         sum: -1 * sum,
         paidBy: {

@@ -1,34 +1,26 @@
 <template>
-  <v-ons-page>
-    <v-ons-toolbar>
-      <div class="center">PieApp</div>
-    </v-ons-toolbar>
-    <br>
-    <v-ons-list-title>
-      <div class="left">Группы</div>
-      <div class="right">
-        <v-ons-icon @click="$router.push({name: 'GroupsForm'})" icon="ion-ios-add, material:md-add"></v-ons-icon>
-      </div>
-    </v-ons-list-title>
+  <f7-page>
+    <f7-navbar title="PieApp"></f7-navbar>
+    <f7-block-title>
+      Группы
+    </f7-block-title>
     <groups-card
       :groups="groups"
     />
-    <br>
-    <v-ons-list-title>
-      <div class="left">Пользователи</div>
-      <div class="right">
-        <v-ons-icon @click="$router.push({name: 'UsersForm'})" icon="ion-ios-add, material:md-add"></v-ons-icon>
-      </div>
-    </v-ons-list-title>
+    <f7-block-footer>
+      <f7-link @click="$f7.views.main.router.navigate({url: '/addgroup/'})">Добавить группу</f7-link>
+    </f7-block-footer>
+    <f7-block-title>
+      Пользователи
+    </f7-block-title>
     <users-card
       :users="users"
     />
-    <br>
-    <v-ons-list-title>
+    <f7-block-title>
       <div class="left">Должники</div>
-    </v-ons-list-title>
+    </f7-block-title>
     <debtors-card :users="users"/>
-  </v-ons-page>
+  </f7-page>
 </template>
 
 <script>
@@ -60,9 +52,6 @@ export default {
     }
   },
   methods: {
-    addGroup () {
-      this.isGroupsFormVisible = false
-    }
   }
 }
 </script>

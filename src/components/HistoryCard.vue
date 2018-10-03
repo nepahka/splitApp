@@ -1,26 +1,14 @@
 <template>
-  <v-ons-list>
-    <v-ons-list-item
+  <f7-list media-list>
+    <f7-list-item
       v-for="payment in currentPayments"
       :key="payment.id"
+      :title="payment.description"
+      :subtitle="subtitle(payment)"
+      :after="payment.sum"
     >
-      <div class="center">
-        <span class="list-item__title">{{ payment.description }}</span>
-        <span class="list-item__subtitle">
-          {{ payment.paidBy.name }} заплатил за
-          <span
-            v-for="(paidUser, index) in payment.paidTo"
-            :key="paidUser.id"
-          >
-            {{ paidToUsers(paidUser, index) }}
-          </span>
-        </span>
-      </div>
-      <div class="right">
-        {{ payment.sum }}
-      </div>
-    </v-ons-list-item>
-  </v-ons-list>
+    </f7-list-item>
+  </f7-list>
 </template>
 
 <script>
@@ -33,14 +21,20 @@ export default {
   },
   computed: {
     currentPayments () {
-      if (this.$route.params.id) {
-        return this.$store.getters.getPaymentByGroupId(this.$route.params.id)
+      if (this.$f7router.currentRoute.params.id) {
+        return this.$store.getters.getPaymentByGroupId(this.$f7router.currentRoute.params.id)
       } else {
         return this.payments
       }
     }
   },
   methods: {
+    subtitle (payment) {
+      let paidTo = payment.paidTo.reduce((prev, cur) => {
+        return prev + cur.name + ', '
+      }, '').slice(0, -2)
+      return payment.paidBy.name + ' заплатил за ' + paidTo
+    },
     showPaymentModal () {
       this.$emit('showPaymentModal', true)
     },

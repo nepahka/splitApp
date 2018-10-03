@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     users () {
-      return this.$store.getters.getMembersByGroupId(this.$route.params['id'])
+      return this.$store.getters.getMembersByGroupId(this.$f7router.currentRoute.params['id'])
     }
   },
   methods: {

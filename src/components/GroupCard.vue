@@ -19,8 +19,8 @@ export default {
   },
   computed: {
     name () {
-      if (this.$route.params.id) {
-        return this.$store.getters.getGroupById(this.$route.params.id)[0].name
+      if (this.$f7router.currentRoute.params.id) {
+        return this.$store.getters.getGroupById(this.$f7router.currentRoute.params.id)[0].name
       } else {
         return ''
       }

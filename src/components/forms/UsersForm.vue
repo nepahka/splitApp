@@ -1,64 +1,52 @@
 <template>
-  <v-ons-page>
-    <v-ons-toolbar>
-      <div class="left">
-        <ons-back-button>Назад</ons-back-button>
-      </div>
-      <div class="center">Новый пользователь</div>
-      <div class="right">
-        <v-ons-toolbar-button @click="addUser">
-          Готово
-        </v-ons-toolbar-button>
-      </div>
-    </v-ons-toolbar>
-    <v-ons-list>
-      <v-ons-list-item>
-        <div class="left">
-          <img :src="picture">
-        </div>
-        <div class="center">
-          <v-ons-list modifier="noborder">
-            <v-ons-list-item>
-              <v-ons-input
-                placeholder="Имя"
-                float
-                v-model="name"
-                type="text"
-              ></v-ons-input>
-            </v-ons-list-item>
-            <v-ons-list-item>
-              <v-ons-input
-                placeholder="Email"
-                float
-                type="text"
-              ></v-ons-input>
-            </v-ons-list-item>
-          </v-ons-list>
-        </div>
-      </v-ons-list-item>
-    </v-ons-list>
-  </v-ons-page>
+  <f7-page>
+    <f7-navbar back-link="Back" title="Новый пользователь">
+      <f7-nav-right>
+        <f7-link @click="addUser">Добавить</f7-link>
+      </f7-nav-right>
+    </f7-navbar>
+    <f7-list>
+      <f7-list-item>
+        <img slot="media" :src="picture">
+        <f7-list class="user-form" simple-list>
+          <f7-list-item>
+            <f7-input
+              placeholder="Имя"
+              :value="name"
+              @input="name = $event.target.value"
+              type="text"
+              clear-button
+            ></f7-input>
+          </f7-list-item>
+          <f7-list-item>
+            <f7-input
+              placeholder="Email"
+              type="email"
+              clear-button
+            ></f7-input>
+          </f7-list-item>
+        </f7-list>
+      </f7-list-item>
+    </f7-list>
+  </f7-page>
 </template>
 
 <script>
 export default {
   name: 'UsersForm',
-  props: {
-  },
+  props: {},
   data () {
     return {
       name: '',
       picture: ''
     }
   },
-  computed: {
-  },
+  computed: {},
   created () {
     this.getPicture()
   },
   methods: {
     async addUser () {
-      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
       await this.createUser()
     },
     async getPicture () {
@@ -71,15 +59,23 @@ export default {
         name: this.name,
         picture: this.picture
       })
+      this.$f7.views.main.router.back()
     }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
+  }
+  .user-form {
+    margin: 0;
+
+    ul {
+      padding-left: 0;
+    }
   }
 </style>

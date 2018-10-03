@@ -1,22 +1,16 @@
 <template>
-  <v-ons-list>
-    <v-ons-list-item
+  <f7-list>
+    <f7-list-item
       v-for="group in groups"
       :key="group.id"
       @click="openGroup(group.id)"
+      link="#"
+      :title="group.name"
+      :after="balance(group.id)"
     >
-      <div class="center">
-        {{ group.name }}
-        {{ balance(group.id) }}
-      </div>
-      <div class="right">
-        <img v-for="member in members(group.id)" :src="member.picture">
-      </div>
-      <div class="right list-item__right">
-        <v-ons-icon icon="ion-ios-arrow-forward, material:md-arrow-forward"></v-ons-icon>
-      </div>
-    </v-ons-list-item>
-  </v-ons-list>
+      <img slot="media" v-for="(member, index) in members(group.id)" :key="index" :src="member.picture">
+    </f7-list-item>
+  </f7-list>
 </template>
 
 <script>
@@ -38,7 +32,7 @@ export default {
       }, 0)
     },
     openGroup (id) {
-      this.$router.push('/groups/' + id)
+      this.$f7.views.main.router.navigate({url: '/groups/' + id})
     }
   }
 }

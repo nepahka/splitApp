@@ -13,8 +13,13 @@
     "ionicUp": "cp node_modules/ionicons/dist/css/* node_modules/onsenui/css/ionicons/css/; cp node_modules/ionicons/dist/fonts/* node_modules/onsenui/css/ionicons/fonts/;"
   },
   "dependencies": {
+    "firebase": "^5.3.1",
+    "framework7": "^3.1.1",
+    "framework7-vue": "^3.1.1",
     "ionicons": "^4.2.4",
+    "node-sass": "^4.9.2",
     "onsenui": "^2.10.3",
+    "sass-loader": "^7.1.0",
     "vue": "^2.5.2",
     "vue-onsenui": "^2.6.1",
     "vue-resource": "^1.5.1",

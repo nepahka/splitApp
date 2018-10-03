@@ -1,14 +1,12 @@
 import Vue from 'vue'
 import App from './App'
-import router from './router'
 import store from './store'
-import VueOnsen from 'vue-onsenui'
+import Framework7 from 'framework7/framework7.esm.bundle.js'
+import Framework7Vue from 'framework7-vue/framework7-vue.esm.bundle.js'
 
-// Webpack CSS import
-import 'onsenui/css/onsenui.css'
-import 'onsenui/css/onsen-css-components.css'
+import Framework7Styles from 'framework7/css/framework7.css'
 
-Vue.use(VueOnsen)
+Framework7.use(Framework7Vue)
 
 function decimalAdjust (type, value, exp) {
   if (typeof exp === 'undefined' || +exp === 0) {
@@ -35,7 +33,6 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 export default new Vue({
   el: '#app',
-  router,
   store,
   components: { App },
   template: '<App/>'

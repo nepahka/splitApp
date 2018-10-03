@@ -1,53 +1,43 @@
 <template>
-  <v-ons-page>
-    <v-ons-toolbar>
-      <div class="left">
-        <ons-back-button>Назад</ons-back-button>
-      </div>
-      <div class="center">Новая группа</div>
-      <div class="right">
-        <v-ons-toolbar-button @click="addGroup">
-          Готово
-        </v-ons-toolbar-button>
-      </div>
-    </v-ons-toolbar>
-    <br>
-    <v-ons-list-title>Имя</v-ons-list-title>
-    <v-ons-list>
-      <v-ons-list-item>
-        <v-ons-input
-          v-model="name"
-          float
+  <f7-page>
+    <f7-navbar back-link="Back" title="Новая группа">
+        <f7-nav-right>
+          <f7-link @click="addGroup">Добавить</f7-link>
+        </f7-nav-right>
+    </f7-navbar>
+    <f7-list inline-labels no-hairlines-md>
+      <f7-list-item>
+        <f7-label>Имя</f7-label>
+        <f7-input
+          :value="name"
           type="text"
-          placeholder="Имя"
-        ></v-ons-input>
-      </v-ons-list-item>
-    </v-ons-list>
-    <br>
-    <v-ons-list-title>Члены</v-ons-list-title>
-    <v-ons-list>
-      <v-ons-list-item
-        v-for="(user, index) in users"
+          @input="name = $event.target.value"
+          placeholder="Имя группы"
+          clear-button
+        ></f7-input>
+      </f7-list-item>
+    </f7-list>
+    <f7-list>
+      <f7-list-item
+        checkbox
+        v-for="user in users"
         :key="user.id"
         @click="toggleCheckbox(user)"
+        :title="user.name"
       >
-        <div class="left">
-          <img :src="user.picture">
-        </div>
-        <div class="center">
-          {{ user.name }}
-        </div>
-        <div class="right list-item__right">
-          <v-ons-checkbox
-            :input-id="'members-' + index"
-            :value="user.id"
-            :checked="isSelected(user)"
-          >
-          </v-ons-checkbox>
-        </div>
-      </v-ons-list-item>
-    </v-ons-list>
-  </v-ons-page>
+        <!--<f7-checkbox-->
+          <!--:input-id="'members-' + index"-->
+          <!--:value="user.id"-->
+          <!--:checked="isSelected(user)"-->
+        <!--&gt;-->
+        <!--</f7-checkbox>-->
+        <img slot="media" :src="user.picture">
+      </f7-list-item>
+    </f7-list>
+    <f7-block-footer>
+      <f7-link @click="$f7.views.main.router.navigate({url: '/adduser/'})">Добавить пользователя</f7-link>
+    </f7-block-footer>
+  </f7-page>
 </template>
 
 <script>
@@ -92,7 +82,7 @@ export default {
           userId: uID
         })
       })
-      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
+      this.$f7.views.main.router.back()
     },
     toggleCheckbox (user) {
       if (this.members.includes(user.id)) {

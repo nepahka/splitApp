@@ -1,22 +1,29 @@
 <template>
-  <div id="app">
-    <v-ons-navigator
-      swipeable
-      v-if="loading"
-      :page-stack="pageStack"
-      :pop-page="goBack"
-    ></v-ons-navigator>
-    <!--<router-view />-->
-  </div>
+  <f7-app :params="f7params">
+    <!-- Statusbar -->
+    <f7-statusbar></f7-statusbar>
+
+    <!-- Main View -->
+    <f7-view url="/" main v-if="loading" :pushState="true"></f7-view>
+  </f7-app>
 </template>
 
 <script>
 /* eslint-disable no-return-assign */
+import routes from './router'
 
 export default {
   name: 'App',
   data () {
     return {
+      f7params: {
+        id: 'io.pieapp.testapp', // App bundle ID
+        name: 'PieApp', // App name
+        theme: 'auto', // Automatic theme detection
+        // App routes
+        routes: routes,
+        pushState: true
+      },
       pageStack: [],
       loading: false
     }
@@ -31,36 +38,14 @@ export default {
         })
       })
     })
-    /* Define how routes should be mapped to the page stack.
-     * This assumes all the routes contain VOnsPage components
-     * and are provided in the 'default' view.
-     * For nested named routes or routes that for some reason
-     * should not be mapped in VOnsNavigator, filter them out here.
-     */
-    const mapRouteStack = route => this.pageStack = route.matched.map(m => m.components.default)
-    /* Set initial pageStack depending on current
-     * route instead of always pushing 'Home' page
-     */
-    mapRouteStack(this.$route)
-    /* On route change, reset the pageStack to the next route */
-    this.$router.beforeEach((to, from, next) => mapRouteStack(to) && next())
   },
-  computed: {
-  },
-  methods: {
-    /* Override default pop behavior and delegate it to the router */
-    goBack () {
-      // Go to the parent route component
-      console.log(this.$route.matched[this.$route.matched.length - 2].name)
-      this.$router.push({ name: this.$route.matched[this.$route.matched.length - 2].name })
-      // this.$router.go(-1); // Could work but might be misleading in some situations
-    }
-  },
+  computed: {},
   watch: {}
 }
 </script>
 
-<style>
+<style lang="scss">
+  @import '../node_modules/ionicons/dist/css/ionicons.min.css';
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -101,9 +86,11 @@ export default {
     justify-content: space-between;
     margin-bottom: 24px;
   }
+
   .back-button__label {
     font-weight: 400;
   }
+
   .list-item:only-child {
     margin: 0;
   }
