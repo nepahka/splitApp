@@ -1,8 +1,5 @@
 # splitapp
 
-> A Vue.js project
-> https://nepahka.github.io/splitApp/dist/index.html
-
 ## Build Setup
 
 ``` bash
